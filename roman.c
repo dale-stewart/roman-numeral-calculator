@@ -47,6 +47,7 @@ void denormalize(char * value)
 	replace(value, "IV", "IIII");
 	replace(value, "IX", "VIIII");
 	replace(value, "XL", "XXXX");
+	replace(value, "XC", "LXXXX");
 }
 
 void normalize(char * value)
@@ -55,6 +56,7 @@ void normalize(char * value)
 	replace(value, "IIII", "IV");
 	replace(value, "VV", "X");
 	replace(value, "XXXXX", "L");
+	replace(value, "LL", "C");
 }
 
 const char * roman_add(const char * a, const char * b)
