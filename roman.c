@@ -42,19 +42,28 @@ static int compare_roman(const void * a, const void * b)
 	return roman_index(*(const char *)b) - roman_index(*(const char *)a);
 }
 
+void denormalize(char * value)
+{
+	replace(value, "IV", "IIII");
+	replace(value, "IX", "VIIII");
+}
+
+void normalize(char * value)
+{
+	replace(value, "IIIII", "V");
+	replace(value, "IIII", "IV");
+	replace(value, "VV", "X");
+}
+
 const char * roman_add(const char * a, const char * b)
 {
 	strcpy(op1, a);
 	strcpy(op2, b);
-	replace(op1, "IV", "IIII");
-	replace(op2, "IV", "IIII");
-	replace(op1, "IX", "VIIII");
-	replace(op2, "IX", "VIIII");
+	denormalize(op1);
+	denormalize(op2);
 	strcpy(buffer, op1);
 	strcat(buffer, op2);
 	qsort(buffer, strlen(buffer), sizeof(char), compare_roman);
-	replace(buffer, "IIIII", "V");
-	replace(buffer, "IIII", "IV");
-	replace(buffer, "VV", "X");
+	normalize(buffer);
     return buffer;
 }
