@@ -87,6 +87,12 @@ START_TEST(four_hundred_plus_four_hundred_is_eight_hundred)
 }
 END_TEST
 
+START_TEST(nine_hundred_plus_nine_hundred_is_one_thousand_eight_hundred)
+{
+    ck_assert_str_eq(roman_add("CM", "CM"), "MDCCC");
+}
+END_TEST
+
 Suite * roman_suite(void)
 {
     Suite * s;
@@ -109,6 +115,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, forty_plus_forty_is_eighty);
     tcase_add_test(tc, ninety_plus_ninety_is_one_hundred_eighty);
     tcase_add_test(tc, four_hundred_plus_four_hundred_is_eight_hundred);
+    tcase_add_test(tc, nine_hundred_plus_nine_hundred_is_one_thousand_eight_hundred);
 
     suite_add_tcase(s, tc);
 
