@@ -23,25 +23,23 @@ static void replace(char * target, const char * substring, const char * replacem
 	}
 }
 
+static int roman_index(char c)
+{
+	static const char order[] = {'I','V','X','L','C','D','M'};
+	static const int order_size = sizeof(order)/sizeof(order[0]);
+
+	int index;
+
+	for (index = 0; index < order_size; ++index)
+		if (c == order[index])
+			break;
+
+	return index;
+}
+
 static int compare_roman(const void * a, const void * b)
 {
-	const char * ca = (const char *)a;
-	const char * cb = (const char *)b;
-
-	const char * order = "IVXLCDM";
-
-	int index_a;
-	int index_b;
-
-	for (index_a = 0; index_a < strlen(order); ++index_a)
-		if (order[index_a] == *ca)
-			break;
-
-	for (index_b = 0; index_b < strlen(order); ++index_b)
-		if (order[index_b] == *cb)
-			break;
-
-	return index_b - index_a;
+	return roman_index(*(const char *)b) - roman_index(*(const char *)a);
 }
 
 const char * roman_add(const char * a, const char * b)
