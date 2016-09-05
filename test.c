@@ -13,27 +13,6 @@ START_TEST(one_plus_one_is_two)
 }
 END_TEST
 
-START_TEST (true_is_true)
-{
-    ck_assert(true);
-}
-END_TEST
-
-Suite * test_suite(void)
-{
-    Suite *s;
-    TCase *tc_core;
-
-    s = suite_create("Test");
-
-    tc_core = tcase_create("true_is_true");
-
-    tcase_add_test(tc_core, true_is_true);
-    suite_add_tcase(s, tc_core);
-
-    return s;
-}
-
 Suite * roman_suite(void)
 {
     Suite * s;
