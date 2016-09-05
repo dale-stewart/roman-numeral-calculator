@@ -48,10 +48,13 @@ const char * roman_add(const char * a, const char * b)
 	strcpy(op2, b);
 	replace(op1, "IV", "IIII");
 	replace(op2, "IV", "IIII");
+	replace(op1, "IX", "VIIII");
+	replace(op2, "IX", "VIIII");
 	strcpy(buffer, op1);
 	strcat(buffer, op2);
 	qsort(buffer, strlen(buffer), sizeof(char), compare_roman);
 	replace(buffer, "IIIII", "V");
 	replace(buffer, "IIII", "IV");
+	replace(buffer, "VV", "X");
     return buffer;
 }
