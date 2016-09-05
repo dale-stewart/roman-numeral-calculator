@@ -9,5 +9,7 @@ const char * roman_add(const char * a, const char * b)
 	strcat(buffer, b);
 	if (0 == strcmp(buffer, "IIII"))
 		strcpy(buffer, "IV");
+	if (0 == strcmp(buffer, "IIIII"))
+		strcpy(buffer, "V");
     return buffer;
 }
