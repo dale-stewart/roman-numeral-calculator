@@ -63,6 +63,12 @@ START_TEST(fourteen_plus_fourteen_is_twenty_eight)
 }
 END_TEST
 
+START_TEST(nineteen_plus_nineteen_is_thirty_eight)
+{
+    ck_assert_str_eq(roman_add("XIX", "XIX"), "XXXVIII");
+}
+END_TEST
+
 Suite * roman_suite(void)
 {
     Suite * s;
@@ -81,6 +87,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, fourteen_plus_one_is_fifteen);
     tcase_add_test(tc, one_plus_fourteen_is_fifteen);
     tcase_add_test(tc, fourteen_plus_fourteen_is_twenty_eight);
+    tcase_add_test(tc, nineteen_plus_nineteen_is_thirty_eight);
 
     suite_add_tcase(s, tc);
 
