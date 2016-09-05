@@ -99,6 +99,12 @@ START_TEST(twenty_plus_twenty_is_forty)
 }
 END_TEST
 
+START_TEST(two_hundred_plus_two_hundred_is_four_hundred)
+{
+    ck_assert_str_eq(roman_add("CC", "CC"), "CD");
+}
+END_TEST
+
 Suite * roman_suite(void)
 {
     Suite * s;
@@ -123,6 +129,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, four_hundred_plus_four_hundred_is_eight_hundred);
     tcase_add_test(tc, nine_hundred_plus_nine_hundred_is_one_thousand_eight_hundred);
     tcase_add_test(tc, twenty_plus_twenty_is_forty);
+    tcase_add_test(tc, two_hundred_plus_two_hundred_is_four_hundred);
 
     suite_add_tcase(s, tc);
 
