@@ -9,9 +9,9 @@ all: testtest
 testtest : build/test
 	@build/test
 
-build/test : test.c
+build/test : test.c roman.c
 	@mkdir -p build
-	@gcc test.c -o build/test $(TEST_linkflags)
+	@gcc test.c roman.c -o build/test $(TEST_linkflags)
 
 .PHONY : clean
 

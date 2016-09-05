@@ -1,11 +1,7 @@
 #include <check.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
-const char * roman_add(const char * a, const char * b)
-{
-    return "II";
-}
+#include "roman.h"
 
 START_TEST(one_plus_one_is_two)
 {
