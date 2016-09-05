@@ -11,7 +11,13 @@ static void replace(char * target, const char * substring, const char * replacem
 	char * location = strstr(target, substring);
 	if (location)
 	{
-		strcpy(buf2, replacement);
+		buf2[0] = '\0';
+		if (location != target)
+		{
+			memcpy(buf2, target, location - target);
+			buf2[location - target] = 0;
+		}
+		strcat(buf2, replacement);
 		strcat(buf2, location + strlen(substring));
 		strcpy(target, buf2);
 	}
