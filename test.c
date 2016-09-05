@@ -21,6 +21,12 @@ START_TEST(two_plus_two_is_four)
 }
 END_TEST
 
+START_TEST(two_plus_three_is_five)
+{
+    ck_assert_str_eq(roman_add("II", "III"), "V");
+}
+END_TEST
+
 Suite * roman_suite(void)
 {
     Suite * s;
@@ -32,6 +38,8 @@ Suite * roman_suite(void)
     tcase_add_test(tc, one_plus_one_is_two);
     tcase_add_test(tc, one_plus_two_is_three);
     tcase_add_test(tc, two_plus_two_is_four);
+    tcase_add_test(tc, two_plus_three_is_five);
+
     suite_add_tcase(s, tc);
 
     return s;
