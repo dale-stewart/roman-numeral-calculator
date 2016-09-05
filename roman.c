@@ -77,3 +77,8 @@ const char * roman_add(const char * a, const char * b)
 	normalize(buffer);
     return buffer;
 }
+
+const char * roman_subtract(const char * a, const char * b)
+{
+	return "";
+}
