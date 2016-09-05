@@ -58,6 +58,7 @@ void normalize(char * value)
 	replace(value, "IIII", "IV");
 	replace(value, "VV", "X");
 	replace(value, "XXXXX", "L");
+	replace(value, "XXXX", "XL");
 	replace(value, "LL", "C");
 	replace(value, "CCCCC", "D");
 	replace(value, "DD", "M");
