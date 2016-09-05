@@ -4,7 +4,7 @@
 
 START_TEST (true_is_true)
 {
-    ck_assert(false);
+    ck_assert(true);
 }
 END_TEST
 
