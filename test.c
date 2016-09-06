@@ -105,6 +105,12 @@ START_TEST(two_hundred_plus_two_hundred_is_four_hundred)
 }
 END_TEST
 
+START_TEST(five_plus_four_is_nine)
+{
+    ck_assert_str_eq(roman_add("V", "IV"), "IX");
+}
+END_TEST
+
 START_TEST(two_minus_one_is_one)
 {
     ck_assert_str_eq(roman_subtract("II", "I"), "I");
@@ -155,6 +161,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, nine_hundred_plus_nine_hundred_is_one_thousand_eight_hundred);
     tcase_add_test(tc, twenty_plus_twenty_is_forty);
     tcase_add_test(tc, two_hundred_plus_two_hundred_is_four_hundred);
+    tcase_add_test(tc, five_plus_four_is_nine);
 
     suite_add_tcase(s, tc);
 
