@@ -98,7 +98,8 @@ static void subtract_one_symbol(char * target, char symbol)
 		replace(target, "V", "IIII") ||
 		replace(target, "X", "VIIII") ||
 		replace(target, "L", "XXXXVIIII") ||
-		replace(target, "C", "LXXXXVIIII");	
+		replace(target, "C", "LXXXXVIIII") ||
+		replace(target, "D", "CCCCLXXXXVIIII");	
 	}
 }
 
