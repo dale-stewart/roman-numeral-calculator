@@ -95,9 +95,10 @@ static void subtract_one_symbol(char * target, char symbol)
 
 	if (!replace(target, match, ""))
 	{
-		replace(target, "V", "IIII")  ||
+		replace(target, "V", "IIII") ||
 		replace(target, "X", "VIIII") ||
-		replace(target, "L", "XXXXVIIII");
+		replace(target, "L", "XXXXVIIII") ||
+		replace(target, "C", "LXXXXVIIII");	
 	}
 }
 
