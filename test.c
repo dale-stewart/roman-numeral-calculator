@@ -117,6 +117,12 @@ START_TEST(fifty_plus_forty_is_ninety)
 }
 END_TEST
 
+START_TEST(five_hundred_plus_four_hundred_is_nine_hundred)
+{
+    ck_assert_str_eq(roman_add("D", "CD"), "CM");
+}
+END_TEST
+
 ////////////////////////////////////////////////////////////
 
 START_TEST(two_minus_one_is_one)
@@ -142,6 +148,9 @@ START_TEST(ten_minus_one_is_nine)
     ck_assert_str_eq(roman_subtract("X", "I"), "IX");
 }
 END_TEST
+
+
+///////////////////////////////////////////////////////////
 
 Suite * roman_suite(void)
 {
@@ -171,6 +180,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, two_hundred_plus_two_hundred_is_four_hundred);
     tcase_add_test(tc, five_plus_four_is_nine);
     tcase_add_test(tc, fifty_plus_forty_is_ninety);
+    tcase_add_test(tc, five_hundred_plus_four_hundred_is_nine_hundred);
 
     suite_add_tcase(s, tc);
 
