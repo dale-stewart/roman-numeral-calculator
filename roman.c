@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include "roman.h"
 
 static char buffer[32];
@@ -80,5 +81,18 @@ const char * roman_add(const char * a, const char * b)
 
 const char * roman_subtract(const char * a, const char * b)
 {
-	return "";
+	strcpy(op1, a);
+	strcpy(op2, b);
+	denormalize(op1);
+	denormalize(op2);
+	strcpy(buffer, op1);
+	char match[2];
+	for (int i = 0; i < strlen(op2); ++i)
+	{
+		match[0] = op2[i];
+		match[1] = '\0';
+		replace(buffer, match, "");
+	}
+	normalize(buffer);
+    return buffer;
 }

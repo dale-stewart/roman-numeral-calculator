@@ -11,7 +11,7 @@ testtest : build/test
 
 build/test : test.c roman.c
 	@mkdir -p build
-	@gcc test.c roman.c -o build/test $(TEST_linkflags)
+	@gcc -std=c99 test.c roman.c -o build/test $(TEST_linkflags)
 
 .PHONY : clean
 
