@@ -61,6 +61,7 @@ void normalize(char * value)
 {
 	replace(value, "IIIII", "V");
 	replace(value, "IIII", "IV");
+	replace(value, "VIV", "IX");
 	replace(value, "VV", "X");
 	replace(value, "XXXXX", "L");
 	replace(value, "XXXX", "XL");
@@ -92,8 +93,8 @@ static void subtract_one_symbol(char * target, char symbol)
 
 	if (!replace(target, match, ""))
 	{
-		if (replace(target, "V", "IIIII"))
-			replace(target, match, "");
+		replace(target, "V", "IIII") ||
+		replace(target, "X", "VIIII");
 	}
 }
 
