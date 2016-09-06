@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "roman.h"
 
 static char buffer[32];
@@ -7,7 +8,7 @@ static char op1[32];
 static char op2[32];
 static char buf2[32];
 
-static void replace(char * target, const char * substring, const char * replacement)
+static bool replace(char * target, const char * substring, const char * replacement)
 {
 	char * location = strstr(target, substring);
 	if (location)
@@ -21,7 +22,10 @@ static void replace(char * target, const char * substring, const char * replacem
 		strcat(buf2, replacement);
 		strcat(buf2, location + strlen(substring));
 		strcpy(target, buf2);
+		return true;
 	}
+
+	return false;
 }
 
 static int roman_index(char c)
@@ -91,7 +95,11 @@ const char * roman_subtract(const char * a, const char * b)
 	{
 		match[0] = op2[i];
 		match[1] = '\0';
-		replace(buffer, match, "");
+		if (!replace(buffer, match, ""))
+		{
+			replace(buffer, "V", "IIIII");
+			replace(buffer, match, "");
+		}
 	}
 	normalize(buffer);
     return buffer;
