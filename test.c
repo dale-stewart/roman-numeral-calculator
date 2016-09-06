@@ -111,6 +111,12 @@ START_TEST(two_minus_one_is_one)
 }
 END_TEST
 
+START_TEST(three_minus_two_is_one)
+{
+    ck_assert_str_eq(roman_subtract("III", "II"), "I");
+}
+END_TEST
+
 Suite * roman_suite(void)
 {
     Suite * s;
@@ -143,6 +149,7 @@ Suite * roman_suite(void)
     tc = tcase_create("roman_subtract");
 
     tcase_add_test(tc, two_minus_one_is_one);
+    tcase_add_test(tc, three_minus_two_is_one);
 
     suite_add_tcase(s, tc);
 
