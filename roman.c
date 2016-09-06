@@ -83,6 +83,20 @@ const char * roman_add(const char * a, const char * b)
     return buffer;
 }
 
+static void subtract_one_symbol(char * target, char symbol)
+{
+	char match[2];
+
+	match[0] = symbol;
+	match[1] = '\0';
+
+	if (!replace(target, match, ""))
+	{
+		if (replace(target, "V", "IIIII"))
+			replace(target, match, "");
+	}
+}
+
 const char * roman_subtract(const char * a, const char * b)
 {
 	strcpy(op1, a);
@@ -90,17 +104,10 @@ const char * roman_subtract(const char * a, const char * b)
 	denormalize(op1);
 	denormalize(op2);
 	strcpy(buffer, op1);
-	char match[2];
+
 	for (int i = 0; i < strlen(op2); ++i)
-	{
-		match[0] = op2[i];
-		match[1] = '\0';
-		if (!replace(buffer, match, ""))
-		{
-			replace(buffer, "V", "IIIII");
-			replace(buffer, match, "");
-		}
-	}
+		subtract_one_symbol(buffer, op2[i]);
+
 	normalize(buffer);
     return buffer;
 }
