@@ -149,6 +149,11 @@ START_TEST(ten_minus_one_is_nine)
 }
 END_TEST
 
+START_TEST(fifty_minus_one_is_forty_nine)
+{
+    ck_assert_str_eq(roman_subtract("L", "I"), "XLIX");
+}
+END_TEST
 
 ///////////////////////////////////////////////////////////
 
@@ -190,6 +195,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, three_minus_two_is_one);
     tcase_add_test(tc, five_minus_one_is_four);
     tcase_add_test(tc, ten_minus_one_is_nine);
+    tcase_add_test(tc, fifty_minus_one_is_forty_nine);
 
     suite_add_tcase(s, tc);
 
