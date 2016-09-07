@@ -207,6 +207,12 @@ START_TEST(can_subtract_one_hundred_from_all_larger_symbols)
 }
 END_TEST
 
+START_TEST(one_thousand_minus_five_hundred_is_five_hundred)
+{
+    ck_assert_str_eq(roman_subtract("M", "D"), "D");
+}
+END_TEST
+
 ///////////////////////////////////////////////////////////
 
 Suite * roman_suite(void)
@@ -255,6 +261,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, can_subtract_ten_from_all_larger_symbols);
     tcase_add_test(tc, can_subtract_fifty_from_all_larger_symbols);
     tcase_add_test(tc, can_subtract_one_hundred_from_all_larger_symbols);
+    tcase_add_test(tc, one_thousand_minus_five_hundred_is_five_hundred);
 
     suite_add_tcase(s, tc);
 
