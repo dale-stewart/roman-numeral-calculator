@@ -4,8 +4,6 @@
 #include "roman.h"
 
 static char buffer[32];
-static char op1[32];
-static char op2[32];
 static char buf2[32];
 
 static void denormalize(char * value);
@@ -17,28 +15,35 @@ static bool replace(char * target, const char * substring, const char * replacem
 
 const char * roman_add(const char * a, const char * b)
 {
-	strcpy(op1, a);
-	strcpy(op2, b);
-	denormalize(op1);
-	denormalize(op2);
-	strcpy(buffer, op1);
-	strcat(buffer, op2);
+	char rhs[32];
+	
+	strcpy(buffer, a);
+	denormalize(buffer);
+
+	strcpy(rhs, b);
+	denormalize(rhs);
+	strcat(buffer, rhs);
+
 	normalize(buffer);
+
     return buffer;
 }
 
 const char * roman_subtract(const char * a, const char * b)
 {
-	strcpy(op1, a);
-	strcpy(op2, b);
-	denormalize(op1);
-	denormalize(op2);
-	strcpy(buffer, op1);
+	char rhs[32];
 
-	for (int i = 0; i < strlen(op2); ++i)
-		subtract_one_symbol(buffer, op2[i]);
+	strcpy(buffer, a);
+	denormalize(buffer);
+
+	strcpy(rhs, b);
+	denormalize(rhs);
+
+	for (int i = 0; i < strlen(rhs); ++i)
+		subtract_one_symbol(buffer, rhs[i]);
 
 	normalize(buffer);
+
     return buffer;
 }
 
