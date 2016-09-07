@@ -59,6 +59,8 @@ void denormalize(char * value)
 
 void normalize(char * value)
 {
+	qsort(value, strlen(value), sizeof(char), compare_roman);
+
 	replace(value, "IIIII", "V");
 	replace(value, "IIII", "IV");
 	replace(value, "VIV", "IX");
@@ -81,7 +83,6 @@ const char * roman_add(const char * a, const char * b)
 	denormalize(op2);
 	strcpy(buffer, op1);
 	strcat(buffer, op2);
-	qsort(buffer, strlen(buffer), sizeof(char), compare_roman);
 	normalize(buffer);
     return buffer;
 }
@@ -148,7 +149,6 @@ const char * roman_subtract(const char * a, const char * b)
 	for (int i = 0; i < strlen(op2); ++i)
 		subtract_one_symbol(buffer, op2[i]);
 
-	qsort(buffer, strlen(buffer), sizeof(char), compare_roman);
 	normalize(buffer);
     return buffer;
 }
