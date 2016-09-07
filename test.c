@@ -173,6 +173,16 @@ START_TEST(one_thousand_minus_one_is_nine_hundred_ninety_nine)
 }
 END_TEST
 
+START_TEST(can_subtract_five_from_all_larger_symbols)
+{
+    ck_assert_str_eq(roman_subtract("X", "V"), "V");
+    ck_assert_str_eq(roman_subtract("L", "V"), "XLV");
+    ck_assert_str_eq(roman_subtract("C", "V"), "XCV");
+    ck_assert_str_eq(roman_subtract("D", "V"), "CDXCV");
+    ck_assert_str_eq(roman_subtract("M", "V"), "CMXCV");
+}
+END_TEST
+
 ///////////////////////////////////////////////////////////
 
 Suite * roman_suite(void)
@@ -217,6 +227,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, one_hundred_minus_one_is_ninety_nine);
     tcase_add_test(tc, five_hundred_minus_one_is_four_hundred_ninety_nine);
     tcase_add_test(tc, one_thousand_minus_one_is_nine_hundred_ninety_nine);
+    tcase_add_test(tc, can_subtract_five_from_all_larger_symbols);
 
     suite_add_tcase(s, tc);
 
