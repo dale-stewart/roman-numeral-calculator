@@ -130,6 +130,10 @@ static void subtract_one_symbol(char * target, char symbol)
 			replace(target, "D", "CCCC") ||
 			replace(target, "M", "DCCCC");
 		}
+		else if ('D' == symbol)
+		{
+			replace(target, "M", "D");
+		}
 	}
 }
 
