@@ -8,46 +8,41 @@ static char op1[32];
 static char op2[32];
 static char buf2[32];
 
-static bool replace(char * target, const char * substring, const char * replacement)
-{
-	char * location = strstr(target, substring);
-	if (location)
-	{
-		buf2[0] = '\0';
-		if (location != target)
-		{
-			memcpy(buf2, target, location - target);
-			buf2[location - target] = 0;
-		}
-		strcat(buf2, replacement);
-		strcat(buf2, location + strlen(substring));
-		strcpy(target, buf2);
-		return true;
-	}
+static void denormalize(char * value);
+static void normalize(char * value);
+static int compare_roman(const void * a, const void * b);
+static int roman_index(char c);
+static void subtract_one_symbol(char * target, char symbol);
+static bool replace(char * target, const char * substring, const char * replacement);
 
-	return false;
+const char * roman_add(const char * a, const char * b)
+{
+	strcpy(op1, a);
+	strcpy(op2, b);
+	denormalize(op1);
+	denormalize(op2);
+	strcpy(buffer, op1);
+	strcat(buffer, op2);
+	normalize(buffer);
+    return buffer;
 }
 
-static int roman_index(char c)
+const char * roman_subtract(const char * a, const char * b)
 {
-	static const char order[] = {'I','V','X','L','C','D','M'};
-	static const int order_size = sizeof(order)/sizeof(order[0]);
+	strcpy(op1, a);
+	strcpy(op2, b);
+	denormalize(op1);
+	denormalize(op2);
+	strcpy(buffer, op1);
 
-	int index;
+	for (int i = 0; i < strlen(op2); ++i)
+		subtract_one_symbol(buffer, op2[i]);
 
-	for (index = 0; index < order_size; ++index)
-		if (c == order[index])
-			break;
-
-	return index;
+	normalize(buffer);
+    return buffer;
 }
 
-static int compare_roman(const void * a, const void * b)
-{
-	return roman_index(*(const char *)b) - roman_index(*(const char *)a);
-}
-
-void denormalize(char * value)
+static void denormalize(char * value)
 {
 	replace(value, "IV", "IIII");
 	replace(value, "IX", "VIIII");
@@ -57,7 +52,7 @@ void denormalize(char * value)
 	replace(value, "CM", "DCCCC");
 }
 
-void normalize(char * value)
+static void normalize(char * value)
 {
 	qsort(value, strlen(value), sizeof(char), compare_roman);
 
@@ -75,16 +70,23 @@ void normalize(char * value)
 	replace(value, "DD", "M");
 }
 
-const char * roman_add(const char * a, const char * b)
+static int compare_roman(const void * a, const void * b)
 {
-	strcpy(op1, a);
-	strcpy(op2, b);
-	denormalize(op1);
-	denormalize(op2);
-	strcpy(buffer, op1);
-	strcat(buffer, op2);
-	normalize(buffer);
-    return buffer;
+	return roman_index(*(const char *)b) - roman_index(*(const char *)a);
+}
+
+static int roman_index(char c)
+{
+	static const char order[] = {'I','V','X','L','C','D','M'};
+	static const int order_size = sizeof(order)/sizeof(order[0]);
+
+	int index;
+
+	for (index = 0; index < order_size; ++index)
+		if (c == order[index])
+			break;
+
+	return index;
 }
 
 static void subtract_one_symbol(char * target, char symbol)
@@ -138,17 +140,22 @@ static void subtract_one_symbol(char * target, char symbol)
 	}
 }
 
-const char * roman_subtract(const char * a, const char * b)
+static bool replace(char * target, const char * substring, const char * replacement)
 {
-	strcpy(op1, a);
-	strcpy(op2, b);
-	denormalize(op1);
-	denormalize(op2);
-	strcpy(buffer, op1);
+	char * location = strstr(target, substring);
+	if (location)
+	{
+		buf2[0] = '\0';
+		if (location != target)
+		{
+			memcpy(buf2, target, location - target);
+			buf2[location - target] = 0;
+		}
+		strcat(buf2, replacement);
+		strcat(buf2, location + strlen(substring));
+		strcpy(target, buf2);
+		return true;
+	}
 
-	for (int i = 0; i < strlen(op2); ++i)
-		subtract_one_symbol(buffer, op2[i]);
-
-	normalize(buffer);
-    return buffer;
+	return false;
 }
