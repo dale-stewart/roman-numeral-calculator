@@ -119,6 +119,12 @@ static void subtract_one_symbol(char * target, char symbol)
 			replace(target, "D", "CCCCLXXXX") ||
 			replace(target, "M", "DCCCCLXXXX");
 		}
+		else if ('L' == symbol)
+		{
+			replace(target, "C", "L") ||
+			replace(target, "D", "CCCCL") ||
+			replace(target, "M", "DCCCCL");
+		}
 	}
 }
 
