@@ -148,6 +148,7 @@ const char * roman_subtract(const char * a, const char * b)
 	for (int i = 0; i < strlen(op2); ++i)
 		subtract_one_symbol(buffer, op2[i]);
 
+	qsort(buffer, strlen(buffer), sizeof(char), compare_roman);
 	normalize(buffer);
     return buffer;
 }
