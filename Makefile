@@ -2,12 +2,17 @@ TEST_linkflags = `pkg-config --libs check`
 
 .PHONY : all
 
-all: testtest
+all: unit_test exhaustive_test
 
-.PHONY : testtest
+.PHONY : unit_test
 
-testtest : build/test
+unit_test : build/test
 	@build/test
+
+.PHONY : exhaustive_test
+
+exhaustive_test: build/exhaustive
+	@build/exhaustive > exhaustive.txt
 
 build/test : test.c roman.c
 	@mkdir -p build
