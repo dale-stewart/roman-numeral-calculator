@@ -3,123 +3,135 @@
 #include <stdlib.h>
 #include "roman.h"
 
+#define ASSERT_ROMAN_ADD_EQ(a, b, expected) \
+    { \
+        char result[ROMAN_SIZE]; \
+        ck_assert_str_eq(roman_add(a, b, result), expected); \
+    }
+
+#define ASSERT_ROMAN_SUBTRACT_EQ(a, b, expected) \
+    { \
+        char result[ROMAN_SIZE]; \
+        ck_assert_str_eq(roman_subtract(a, b, result), expected); \
+    }
+
 START_TEST(one_plus_one_is_two)
 {
-    ck_assert_str_eq(roman_add("I", "I"), "II");
+    ASSERT_ROMAN_ADD_EQ("I", "I", "II");
 }
 END_TEST
 
 START_TEST(one_plus_two_is_three)
 {
-    ck_assert_str_eq(roman_add("I", "II"), "III");
+    ASSERT_ROMAN_ADD_EQ("I", "II", "III");
 }
 END_TEST
 
 START_TEST(two_plus_two_is_four)
 {
-    ck_assert_str_eq(roman_add("II", "II"), "IV");
+    ASSERT_ROMAN_ADD_EQ("II", "II", "IV");
 }
 END_TEST
 
 START_TEST(two_plus_three_is_five)
 {
-    ck_assert_str_eq(roman_add("II", "III"), "V");
+    ASSERT_ROMAN_ADD_EQ("II", "III", "V");
 }
 END_TEST
 
 START_TEST(three_plus_three_is_six)
 {
-    ck_assert_str_eq(roman_add("III", "III"), "VI");
+    ASSERT_ROMAN_ADD_EQ("III", "III", "VI");
 }
 END_TEST
 
 START_TEST(four_plus_one_is_five)
 {
-    ck_assert_str_eq(roman_add("IV", "I"), "V");
+    ASSERT_ROMAN_ADD_EQ("IV", "I", "V");
 }
 END_TEST
 
 START_TEST(one_plus_four_is_five)
 {
-    ck_assert_str_eq(roman_add("I", "IV"), "V");
+    ASSERT_ROMAN_ADD_EQ("I", "IV", "V");
 }
 END_TEST
 
 START_TEST(fourteen_plus_one_is_fifteen)
 {
-    ck_assert_str_eq(roman_add("XIV", "I"), "XV");
+    ASSERT_ROMAN_ADD_EQ("XIV", "I", "XV");
 }
 END_TEST
 
 START_TEST(one_plus_fourteen_is_fifteen)
 {
-    ck_assert_str_eq(roman_add("I", "XIV"), "XV");
+    ASSERT_ROMAN_ADD_EQ("I", "XIV", "XV");
 }
 END_TEST
 
 START_TEST(fourteen_plus_fourteen_is_twenty_eight)
 {
-    ck_assert_str_eq(roman_add("XIV", "XIV"), "XXVIII");
+    ASSERT_ROMAN_ADD_EQ("XIV", "XIV", "XXVIII");
 }
 END_TEST
 
 START_TEST(nineteen_plus_nineteen_is_thirty_eight)
 {
-    ck_assert_str_eq(roman_add("XIX", "XIX"), "XXXVIII");
+    ASSERT_ROMAN_ADD_EQ("XIX", "XIX", "XXXVIII");
 }
 END_TEST
 
 START_TEST(forty_plus_forty_is_eighty)
 {
-    ck_assert_str_eq(roman_add("XL", "XL"), "LXXX");
+    ASSERT_ROMAN_ADD_EQ("XL", "XL", "LXXX");
 }
 END_TEST
 
 START_TEST(ninety_plus_ninety_is_one_hundred_eighty)
 {
-    ck_assert_str_eq(roman_add("XC", "XC"), "CLXXX");
+    ASSERT_ROMAN_ADD_EQ("XC", "XC", "CLXXX");
 }
 END_TEST
 
 START_TEST(four_hundred_plus_four_hundred_is_eight_hundred)
 {
-    ck_assert_str_eq(roman_add("CD", "CD"), "DCCC");
+    ASSERT_ROMAN_ADD_EQ("CD", "CD", "DCCC");
 }
 END_TEST
 
 START_TEST(nine_hundred_plus_nine_hundred_is_one_thousand_eight_hundred)
 {
-    ck_assert_str_eq(roman_add("CM", "CM"), "MDCCC");
+    ASSERT_ROMAN_ADD_EQ("CM", "CM", "MDCCC");
 }
 END_TEST
 
 START_TEST(twenty_plus_twenty_is_forty)
 {
-    ck_assert_str_eq(roman_add("XX", "XX"), "XL");
+    ASSERT_ROMAN_ADD_EQ("XX", "XX", "XL");
 }
 END_TEST
 
 START_TEST(two_hundred_plus_two_hundred_is_four_hundred)
 {
-    ck_assert_str_eq(roman_add("CC", "CC"), "CD");
+    ASSERT_ROMAN_ADD_EQ("CC", "CC", "CD");
 }
 END_TEST
 
 START_TEST(five_plus_four_is_nine)
 {
-    ck_assert_str_eq(roman_add("V", "IV"), "IX");
+    ASSERT_ROMAN_ADD_EQ("V", "IV", "IX");
 }
 END_TEST
 
 START_TEST(fifty_plus_forty_is_ninety)
 {
-    ck_assert_str_eq(roman_add("L", "XL"), "XC");
+    ASSERT_ROMAN_ADD_EQ("L", "XL", "XC");
 }
 END_TEST
 
 START_TEST(five_hundred_plus_four_hundred_is_nine_hundred)
 {
-    ck_assert_str_eq(roman_add("D", "CD"), "CM");
+    ASSERT_ROMAN_ADD_EQ("D", "CD", "CM");
 }
 END_TEST
 
@@ -127,95 +139,95 @@ END_TEST
 
 START_TEST(two_minus_one_is_one)
 {
-    ck_assert_str_eq(roman_subtract("II", "I"), "I");
+    ASSERT_ROMAN_SUBTRACT_EQ("II", "I", "I");
 }
 END_TEST
 
 START_TEST(three_minus_two_is_one)
 {
-    ck_assert_str_eq(roman_subtract("III", "II"), "I");
+    ASSERT_ROMAN_SUBTRACT_EQ("III", "II", "I");
 }
 END_TEST
 
 START_TEST(five_minus_one_is_four)
 {
-    ck_assert_str_eq(roman_subtract("V", "I"), "IV");
+    ASSERT_ROMAN_SUBTRACT_EQ("V", "I", "IV");
 }
 END_TEST
 
 START_TEST(ten_minus_one_is_nine)
 {
-    ck_assert_str_eq(roman_subtract("X", "I"), "IX");
+    ASSERT_ROMAN_SUBTRACT_EQ("X", "I", "IX");
 }
 END_TEST
 
 START_TEST(fifty_minus_one_is_forty_nine)
 {
-    ck_assert_str_eq(roman_subtract("L", "I"), "XLIX");
+    ASSERT_ROMAN_SUBTRACT_EQ("L", "I", "XLIX");
 }
 END_TEST
 
 START_TEST(one_hundred_minus_one_is_ninety_nine)
 {
-    ck_assert_str_eq(roman_subtract("C", "I"), "XCIX");
+    ASSERT_ROMAN_SUBTRACT_EQ("C", "I", "XCIX");
 }
 END_TEST
 
 START_TEST(five_hundred_minus_one_is_four_hundred_ninety_nine)
 {
-    ck_assert_str_eq(roman_subtract("D", "I"), "CDXCIX");
+    ASSERT_ROMAN_SUBTRACT_EQ("D", "I", "CDXCIX");
 }
 END_TEST
 
 START_TEST(one_thousand_minus_one_is_nine_hundred_ninety_nine)
 {
-    ck_assert_str_eq(roman_subtract("M", "I"), "CMXCIX");
+    ASSERT_ROMAN_SUBTRACT_EQ("M", "I", "CMXCIX");
 }
 END_TEST
 
 START_TEST(can_subtract_five_from_all_larger_symbols)
 {
-    ck_assert_str_eq(roman_subtract("X", "V"), "V");
-    ck_assert_str_eq(roman_subtract("L", "V"), "XLV");
-    ck_assert_str_eq(roman_subtract("C", "V"), "XCV");
-    ck_assert_str_eq(roman_subtract("D", "V"), "CDXCV");
-    ck_assert_str_eq(roman_subtract("M", "V"), "CMXCV");
+    ASSERT_ROMAN_SUBTRACT_EQ("X", "V", "V");
+    ASSERT_ROMAN_SUBTRACT_EQ("L", "V", "XLV");
+    ASSERT_ROMAN_SUBTRACT_EQ("C", "V", "XCV");
+    ASSERT_ROMAN_SUBTRACT_EQ("D", "V", "CDXCV");
+    ASSERT_ROMAN_SUBTRACT_EQ("M", "V", "CMXCV");
 }
 END_TEST
 
 START_TEST(can_subtract_ten_from_all_larger_symbols)
 {
-    ck_assert_str_eq(roman_subtract("L", "X"), "XL");
-    ck_assert_str_eq(roman_subtract("C", "X"), "XC");
-    ck_assert_str_eq(roman_subtract("D", "X"), "CDXC");
-    ck_assert_str_eq(roman_subtract("M", "X"), "CMXC");
+    ASSERT_ROMAN_SUBTRACT_EQ("L", "X", "XL");
+    ASSERT_ROMAN_SUBTRACT_EQ("C", "X", "XC");
+    ASSERT_ROMAN_SUBTRACT_EQ("D", "X", "CDXC");
+    ASSERT_ROMAN_SUBTRACT_EQ("M", "X", "CMXC");
 }
 END_TEST
 
 START_TEST(can_subtract_fifty_from_all_larger_symbols)
 {
-    ck_assert_str_eq(roman_subtract("C", "L"), "L");
-    ck_assert_str_eq(roman_subtract("D", "L"), "CDL");
-    ck_assert_str_eq(roman_subtract("M", "L"), "CML");
+    ASSERT_ROMAN_SUBTRACT_EQ("C", "L", "L");
+    ASSERT_ROMAN_SUBTRACT_EQ("D", "L", "CDL");
+    ASSERT_ROMAN_SUBTRACT_EQ("M", "L", "CML");
 }
 END_TEST
 
 START_TEST(can_subtract_one_hundred_from_all_larger_symbols)
 {
-    ck_assert_str_eq(roman_subtract("D", "C"), "CD");
-    ck_assert_str_eq(roman_subtract("M", "C"), "CM");
+    ASSERT_ROMAN_SUBTRACT_EQ("D", "C", "CD");
+    ASSERT_ROMAN_SUBTRACT_EQ("M", "C", "CM");
 }
 END_TEST
 
 START_TEST(one_thousand_minus_five_hundred_is_five_hundred)
 {
-    ck_assert_str_eq(roman_subtract("M", "D"), "D");
+    ASSERT_ROMAN_SUBTRACT_EQ("M", "D", "D");
 }
 END_TEST
 
 START_TEST(twenty_minus_one_is_nineteen)
 {
-    ck_assert_str_eq(roman_subtract("XX", "I"), "XIX");
+    ASSERT_ROMAN_SUBTRACT_EQ("XX", "I", "XIX");
 }
 END_TEST
 

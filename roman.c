@@ -3,8 +3,6 @@
 #include <stdbool.h>
 #include "roman.h"
 
-static char buffer[32];
-
 static void denormalize(char * value);
 static void normalize(char * value);
 static int compare_roman(const void * a, const void * b);
@@ -12,38 +10,38 @@ static int roman_index(char c);
 static void subtract_one_symbol(char * target, char symbol);
 static bool replace(char * target, const char * substring, const char * replacement);
 
-const char * roman_add(const char * a, const char * b)
+const char * roman_add(const char * a, const char * b, char * result)
 {
-    char rhs[32];
+    char rhs[ROMAN_SIZE];
 
-    strcpy(buffer, a);
-    denormalize(buffer);
+    strcpy(result, a);
+    denormalize(result);
 
     strcpy(rhs, b);
     denormalize(rhs);
-    strcat(buffer, rhs);
+    strcat(result, rhs);
 
-    normalize(buffer);
+    normalize(result);
 
-    return buffer;
+    return result;
 }
 
-const char * roman_subtract(const char * a, const char * b)
+const char * roman_subtract(const char * a, const char * b, char * result)
 {
-    char rhs[32];
+    char rhs[ROMAN_SIZE];
 
-    strcpy(buffer, a);
-    denormalize(buffer);
+    strcpy(result, a);
+    denormalize(result);
 
     strcpy(rhs, b);
     denormalize(rhs);
 
     for (int i = 0; i < strlen(rhs); ++i)
-        subtract_one_symbol(buffer, rhs[i]);
+        subtract_one_symbol(result, rhs[i]);
 
-    normalize(buffer);
+    normalize(result);
 
-    return buffer;
+    return result;
 }
 
 static void denormalize(char * value)
