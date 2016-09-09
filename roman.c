@@ -146,19 +146,20 @@ static void subtract_one_symbol(char * target, char symbol)
 
 static bool replace(char * target, const char * substring, const char * replacement)
 {
-    char temporary[32];
-    char * location = strstr(target, substring);
-    if (location)
+    char * substring_location = strstr(target, substring);
+    if (substring_location)
     {
-        temporary[0] = '\0';
-        if (location != target)
-        {
-            memcpy(temporary, target, location - target);
-            temporary[location - target] = 0;
-        }
-        strcat(temporary, replacement);
-        strcat(temporary, location + strlen(substring));
-        strcpy(target, temporary);
+        int substring_offset = substring_location - target;
+        int substring_length = strlen(substring);
+        int replacement_length = strlen(replacement);
+        int target_length = strlen(target);
+
+        memmove(substring_location + replacement_length,
+                substring_location + substring_length,
+                target_length - substring_length - substring_offset + 1);
+
+        memcpy(substring_location, replacement, replacement_length);
+
         return true;
     }
 
