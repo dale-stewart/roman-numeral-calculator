@@ -7,7 +7,9 @@ static void denormalize(char * value);
 static void normalize(char * value);
 static int compare_roman(const void * a, const void * b);
 static int roman_index(char c);
-static void subtract_one_symbol(char * target, char symbol);
+static void subtract_symbol(char * target, char symbol);
+static bool delete_symbol(char * target, char symbol);
+static void borrow(char * target, char symbol);
 static bool replace(char * target, const char * substring, const char * replacement);
 
 const char * roman_add(const char * a, const char * b, char * result)
@@ -37,7 +39,7 @@ const char * roman_subtract(const char * a, const char * b, char * result)
     denormalize(rhs);
 
     for (int i = 0; i < strlen(rhs); ++i)
-        subtract_one_symbol(result, rhs[i]);
+        subtract_symbol(result, rhs[i]);
 
     normalize(result);
 
@@ -91,54 +93,64 @@ static int roman_index(char c)
     return index;
 }
 
-static void subtract_one_symbol(char * target, char symbol)
+static void subtract_symbol(char * target, char symbol)
+{
+    if (!delete_symbol(target, symbol))
+    {
+        borrow(target, symbol);
+    }
+}
+
+static bool delete_symbol(char * target, char symbol)
 {
     char match[2];
 
     match[0] = symbol;
     match[1] = '\0';
 
-    if (!replace(target, match, ""))
+    return replace(target, match, "");
+}
+
+static void borrow(char * target, char symbol)
+{
+    if ('I' == symbol)
     {
-        if ('I' == symbol)
-        {
-            replace(target, "V", "IIII") ||
-            replace(target, "X", "VIIII") ||
-            replace(target, "L", "XXXXVIIII") ||
-            replace(target, "C", "LXXXXVIIII") ||
-            replace(target, "D", "CCCCLXXXXVIIII") ||
-            replace(target, "M", "DCCCCLXXXXVIIII");
-        }
-        else if ('V' == symbol)
-        {
-            replace(target, "X", "V") ||
-            replace(target, "L", "XXXXV") ||
-            replace(target, "C", "LXXXXV") ||
-            replace(target, "D", "CCCCLXXXXV") ||
-            replace(target, "M", "DCCCCLXXXXV");
-        }
-        else if ('X' == symbol)
-        {
-            replace(target, "L", "XXXX") ||
-            replace(target, "C", "LXXXX") ||
-            replace(target, "D", "CCCCLXXXX") ||
-            replace(target, "M", "DCCCCLXXXX");
-        }
-        else if ('L' == symbol)
-        {
-            replace(target, "C", "L") ||
-            replace(target, "D", "CCCCL") ||
-            replace(target, "M", "DCCCCL");
-        }
-        else if ('C' == symbol)
-        {
-            replace(target, "D", "CCCC") ||
-            replace(target, "M", "DCCCC");
-        }
-        else if ('D' == symbol)
-        {
-            replace(target, "M", "D");
-        }
+        replace(target, "V", "IIII") ||
+        replace(target, "X", "VIIII") ||
+        replace(target, "L", "XXXXVIIII") ||
+        replace(target, "C", "LXXXXVIIII") ||
+        replace(target, "D", "CCCCLXXXXVIIII") ||
+        replace(target, "M", "DCCCCLXXXXVIIII");
+    }
+    else if ('V' == symbol)
+    {
+        replace(target, "X", "V") ||
+        replace(target, "L", "XXXXV") ||
+        replace(target, "C", "LXXXXV") ||
+        replace(target, "D", "CCCCLXXXXV") ||
+        replace(target, "M", "DCCCCLXXXXV");
+    }
+    else if ('X' == symbol)
+    {
+        replace(target, "L", "XXXX") ||
+        replace(target, "C", "LXXXX") ||
+        replace(target, "D", "CCCCLXXXX") ||
+        replace(target, "M", "DCCCCLXXXX");
+    }
+    else if ('L' == symbol)
+    {
+        replace(target, "C", "L") ||
+        replace(target, "D", "CCCCL") ||
+        replace(target, "M", "DCCCCL");
+    }
+    else if ('C' == symbol)
+    {
+        replace(target, "D", "CCCC") ||
+        replace(target, "M", "DCCCC");
+    }
+    else if ('D' == symbol)
+    {
+        replace(target, "M", "D");
     }
 }
 
