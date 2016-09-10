@@ -8,40 +8,10 @@
 static bool denormalize(char * value, size_t value_size);
 static bool normalize(char * value, size_t value_size);
 static bool subtract_symbol(char * value, char symbol);
-
-///////////////////////////////////////////////////////////////////////////////
-
-static bool copy_string(char * destination, size_t destination_size, const char * source)
-{
-    size_t source_size = strlen(source) + 1;
-
-    if (source_size <= destination_size)
-    {
-        memcpy(destination, source, source_size);
-        return true;
-    }
-
-    return false;
-}
-
-static bool append_string(char * destination, size_t destination_size, const char * source)
-{
-    size_t source_size = strlen(source) + 1;
-    size_t destination_length = strlen(destination);
-
-    if (source_size + destination_length <= destination_size)
-    {
-        memcpy(destination + destination_length, source, source_size);
-        return true;
-    }
-
-    return false;
-}
-
-static void clear_string(char * destination)
-{
-    destination[0] = '\0';
-}
+static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs);
+static bool copy_string(char * destination, size_t destination_size, const char * source);
+static bool append_string(char * destination, size_t destination_size, const char * source);
+static void clear_string(char * destination);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -62,19 +32,6 @@ const char * roman_add(const char * a, const char * b, char * result, size_t res
         clear_string(result);
 
     return result;
-}
-
-static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs)
-{
-    size_t rhs_length = strlen(rhs);
-
-    for (size_t i = 0; i < rhs_length; ++i)
-    {
-        if (!subtract_symbol(value, rhs[i]))
-            return false;
-    }
-
-    return true;
 }
 
 const char * roman_subtract(const char * a, const char * b, char * result, size_t result_size)
@@ -149,6 +106,40 @@ static bool normalize(char * value, size_t value_size)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static bool copy_string(char * destination, size_t destination_size, const char * source)
+{
+    size_t source_size = strlen(source) + 1;
+
+    if (source_size <= destination_size)
+    {
+        memcpy(destination, source, source_size);
+        return true;
+    }
+
+    return false;
+}
+
+static bool append_string(char * destination, size_t destination_size, const char * source)
+{
+    size_t source_size = strlen(source) + 1;
+    size_t destination_length = strlen(destination);
+
+    if (source_size + destination_length <= destination_size)
+    {
+        memcpy(destination + destination_length, source, source_size);
+        return true;
+    }
+
+    return false;
+}
+
+static void clear_string(char * destination)
+{
+    destination[0] = '\0';
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 static bool replace(char * value, const char * substring, const char * replacement);
 static int roman_index(char c);
 
@@ -204,6 +195,19 @@ static bool subtract_symbol(char * value, char symbol)
         success = borrow(value, symbol);
 
     return success;
+}
+
+static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs)
+{
+    size_t rhs_length = strlen(rhs);
+
+    for (size_t i = 0; i < rhs_length; ++i)
+    {
+        if (!subtract_symbol(value, rhs[i]))
+            return false;
+    }
+
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
