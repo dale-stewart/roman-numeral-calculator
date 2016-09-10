@@ -3,14 +3,13 @@
 #include <stdbool.h>
 #include "roman.h"
 
+///////////////////////////////////////////////////////////////////////////////
+
 static void denormalize(char * value);
 static void normalize(char * value);
-static int compare_roman(const void * a, const void * b);
-static int roman_index(char c);
-static void subtract_symbol(char * target, char symbol);
-static bool delete_symbol(char * target, char symbol);
-static void borrow(char * target, char symbol);
-static bool replace(char * target, const char * substring, const char * replacement);
+static void subtract_symbol(char * value, char symbol);
+
+///////////////////////////////////////////////////////////////////////////////
 
 const char * roman_add(const char * a, const char * b, char * result)
 {
@@ -46,32 +45,68 @@ const char * roman_subtract(const char * a, const char * b, char * result)
     return result;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+typedef struct Translation
+{
+    const char * from;
+    const char * to;
+} Translation;
+
+static void translate_all(char * value, const Translation * table, int table_size);
+static int compare_roman(const void * a, const void * b);
+
+#define countof(array) sizeof(array)/sizeof(array[0])
+
 static void denormalize(char * value)
 {
-    replace(value, "IV", "IIII");
-    replace(value, "IX", "VIIII");
-    replace(value, "XL", "XXXX");
-    replace(value, "XC", "LXXXX");
-    replace(value, "CD", "CCCC");
-    replace(value, "CM", "DCCCC");
+    static const Translation table[] =
+    {
+        { "IV", "IIII"  },
+        { "IX", "VIIII" },
+        { "XL", "XXXX"  },
+        { "XC", "LXXXX" },
+        { "CD", "CCCC"  },
+        { "CM", "DCCCC" },
+    };
+
+    translate_all(value, table, countof(table));
 }
 
 static void normalize(char * value)
 {
+    static const Translation table[] =
+    {
+        { "IIIII",  "V"  },
+        { "IIII",   "IV" },
+        { "VIV",    "IX" },
+        { "VV",     "X"  },
+        { "XXXXX",  "L"  },
+        { "XXXX",   "XL" },
+        { "LXL",    "XC" },
+        { "LL",     "C"  },
+        { "CCCCC",  "D"  },
+        { "CCCC",   "CD" },
+        { "DCD",    "CM" },
+        { "DD",     "M"  },
+    };
+
     qsort(value, strlen(value), sizeof(char), compare_roman);
 
-    replace(value, "IIIII", "V");
-    replace(value, "IIII", "IV");
-    replace(value, "VIV", "IX");
-    replace(value, "VV", "X");
-    replace(value, "XXXXX", "L");
-    replace(value, "XXXX", "XL");
-    replace(value, "LXL", "XC");
-    replace(value, "LL", "C");
-    replace(value, "CCCCC", "D");
-    replace(value, "CCCC", "CD");
-    replace(value, "DCD", "CM");
-    replace(value, "DD", "M");
+    translate_all(value, table, countof(table));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static bool replace(char * value, const char * substring, const char * replacement);
+static int roman_index(char c);
+
+static void translate_all(char * value, const Translation * table, int table_size)
+{
+    for(int index = 0; index < table_size; ++index)
+    {
+        replace(value, table[index].from, table[index].to);
+    }
 }
 
 static int compare_roman(const void * a, const void * b)
@@ -79,94 +114,147 @@ static int compare_roman(const void * a, const void * b)
     return roman_index(*(const char *)b) - roman_index(*(const char *)a);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 static int roman_index(char c)
 {
     static const char order[] = {'I','V','X','L','C','D','M'};
-    static const int order_size = sizeof(order)/sizeof(order[0]);
 
     int index;
 
-    for (index = 0; index < order_size; ++index)
+    for (index = 0; index < countof(order); ++index)
         if (c == order[index])
             break;
 
     return index;
 }
 
-static void subtract_symbol(char * target, char symbol)
+///////////////////////////////////////////////////////////////////////////////
+
+static bool delete_symbol(char * value, char symbol);
+static void borrow(char * value, char symbol);
+
+static void subtract_symbol(char * value, char symbol)
 {
-    if (!delete_symbol(target, symbol))
+    if (!delete_symbol(value, symbol))
     {
-        borrow(target, symbol);
+        borrow(value, symbol);
     }
 }
 
-static bool delete_symbol(char * target, char symbol)
+///////////////////////////////////////////////////////////////////////////////
+
+static void translate_first_match(char * value, const Translation * table, int table_size);
+
+static bool delete_symbol(char * value, char symbol)
 {
     char match[2];
 
     match[0] = symbol;
     match[1] = '\0';
 
-    return replace(target, match, "");
+    return replace(value, match, "");
 }
 
-static void borrow(char * target, char symbol)
+static void borrow(char * value, char symbol)
 {
-    if ('I' == symbol)
+    static const Translation borrow_I[] =
     {
-        replace(target, "V", "IIII") ||
-        replace(target, "X", "VIIII") ||
-        replace(target, "L", "XXXXVIIII") ||
-        replace(target, "C", "LXXXXVIIII") ||
-        replace(target, "D", "CCCCLXXXXVIIII") ||
-        replace(target, "M", "DCCCCLXXXXVIIII");
+        { "V", "IIII"            },
+        { "X", "VIIII"           },
+        { "L", "XXXXVIIII"       },
+        { "C", "LXXXXVIIII"      },
+        { "D", "CCCCLXXXXVIIII"  },
+        { "M", "DCCCCLXXXXVIIII" },
+    };
+
+    static const Translation borrow_V[] =
+    {
+        { "X", "V"           },
+        { "L", "XXXXV"       },
+        { "C", "LXXXXV"      },
+        { "D", "CCCCLXXXXV"  },
+        { "M", "DCCCCLXXXXV" },
+    };
+
+    static const Translation borrow_X[] =
+    {
+        { "L", "XXXX"       },
+        { "C", "LXXXX"      },
+        { "D", "CCCCLXXXX"  },
+        { "M", "DCCCCLXXXX" },
+    };
+
+    static const Translation borrow_L[] =
+    {
+        { "C", "L"      },
+        { "D", "CCCCL"  },
+        { "M", "DCCCCL" },
+    };
+
+    static const Translation borrow_C[] =
+    {
+        { "D", "CCCC"  },
+        { "M", "DCCCC" },
+    };
+
+    static const Translation borrow_D[] =
+    {
+        { "M", "D" },
+    };
+
+    static const struct
+    {
+        const Translation * translation;
+        int size;
     }
-    else if ('V' == symbol)
+    table[] =
     {
-        replace(target, "X", "V") ||
-        replace(target, "L", "XXXXV") ||
-        replace(target, "C", "LXXXXV") ||
-        replace(target, "D", "CCCCLXXXXV") ||
-        replace(target, "M", "DCCCCLXXXXV");
-    }
-    else if ('X' == symbol)
+        { borrow_I, countof(borrow_I) },
+        { borrow_V, countof(borrow_V) },
+        { borrow_X, countof(borrow_X) },
+        { borrow_L, countof(borrow_L) },
+        { borrow_C, countof(borrow_C) },
+        { borrow_D, countof(borrow_D) },
+    };
+
+    int index = roman_index(symbol);
+
+    if (index < countof(table))
     {
-        replace(target, "L", "XXXX") ||
-        replace(target, "C", "LXXXX") ||
-        replace(target, "D", "CCCCLXXXX") ||
-        replace(target, "M", "DCCCCLXXXX");
-    }
-    else if ('L' == symbol)
-    {
-        replace(target, "C", "L") ||
-        replace(target, "D", "CCCCL") ||
-        replace(target, "M", "DCCCCL");
-    }
-    else if ('C' == symbol)
-    {
-        replace(target, "D", "CCCC") ||
-        replace(target, "M", "DCCCC");
-    }
-    else if ('D' == symbol)
-    {
-        replace(target, "M", "D");
+        translate_first_match(value, table[index].translation, table[index].size);
     }
 }
 
-static bool replace(char * target, const char * substring, const char * replacement)
+///////////////////////////////////////////////////////////////////////////////
+
+static void translate_first_match(char * value, const Translation * table, int table_size)
 {
-    char * substring_location = strstr(target, substring);
+    for(int index = 0; index < table_size; ++index)
+    {
+        if (replace(value, table[index].from, table[index].to))
+            break;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static bool replace(char * value, const char * substring, const char * replacement)
+{
+    char * substring_location = strstr(value, substring);
     if (substring_location)
     {
-        int substring_offset = substring_location - target;
+        int substring_offset = substring_location - value;
         int substring_length = strlen(substring);
         int replacement_length = strlen(replacement);
-        int target_length = strlen(target);
+        int value_length = strlen(value);
 
-        memmove(substring_location + replacement_length,
-                substring_location + substring_length,
-                target_length - substring_length - substring_offset + 1);
+        if (substring_length != replacement_length)
+        {
+            memmove(substring_location + replacement_length,
+                    substring_location + substring_length,
+                    value_length - substring_length - substring_offset + 1);
+        }
 
         memcpy(substring_location, replacement, replacement_length);
 
