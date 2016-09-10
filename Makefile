@@ -13,6 +13,7 @@ unit_test : build/test
 
 exhaustive_test: build/exhaustive
 	@build/exhaustive > exhaustive.txt
+	@git diff exhaustive.txt
 
 build/test : test.c roman.c
 	@mkdir -p build

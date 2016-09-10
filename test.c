@@ -6,13 +6,13 @@
 #define ASSERT_ROMAN_ADD_EQ(a, b, expected) \
     { \
         char result[ROMAN_SIZE]; \
-        ck_assert_str_eq(roman_add(a, b, result), expected); \
+        ck_assert_str_eq(roman_add(a, b, result, sizeof(result)), expected); \
     }
 
 #define ASSERT_ROMAN_SUBTRACT_EQ(a, b, expected) \
     { \
         char result[ROMAN_SIZE]; \
-        ck_assert_str_eq(roman_subtract(a, b, result), expected); \
+        ck_assert_str_eq(roman_subtract(a, b, result, sizeof(result)), expected); \
     }
 
 START_TEST(one_plus_one_is_two)
@@ -231,9 +231,30 @@ START_TEST(twenty_minus_one_is_nineteen)
 }
 END_TEST
 
+///////////////////////////////////////////////////////////
+
 START_TEST(subtraction_underflow_returns_empty_string)
 {
     ASSERT_ROMAN_SUBTRACT_EQ("I", "XX", "");
+}
+END_TEST
+
+START_TEST(argument_too_large_returns_empty_string)
+{
+    ASSERT_ROMAN_ADD_EQ("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", "", "");
+    ASSERT_ROMAN_ADD_EQ("", "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", "");
+}
+END_TEST
+
+START_TEST(result_too_large_returns_empty_string)
+{
+    ASSERT_ROMAN_ADD_EQ("MMMMMMMMMMMMMMMM", "MMMMMMMMMMMMMMMM", "");
+}
+END_TEST
+
+START_TEST(denormalize_too_large_returns_empty_string)
+{
+    ASSERT_ROMAN_ADD_EQ("MMMMMMMMMMMMMMMMMMMMMMMMMMMIV", "", "");
 }
 END_TEST
 
@@ -287,7 +308,15 @@ Suite * roman_suite(void)
     tcase_add_test(tc, can_subtract_one_hundred_from_all_larger_symbols);
     tcase_add_test(tc, one_thousand_minus_five_hundred_is_five_hundred);
     tcase_add_test(tc, twenty_minus_one_is_nineteen);
+
+    suite_add_tcase(s, tc);
+
+    tc = tcase_create("edge_cases");
+
     tcase_add_test(tc, subtraction_underflow_returns_empty_string);
+    tcase_add_test(tc, argument_too_large_returns_empty_string);
+    tcase_add_test(tc, result_too_large_returns_empty_string);
+    tcase_add_test(tc, denormalize_too_large_returns_empty_string);
 
     suite_add_tcase(s, tc);
 

@@ -5,48 +5,85 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void denormalize(char * value);
-static void normalize(char * value);
+static bool denormalize(char * value, size_t value_size);
+static bool normalize(char * value, size_t value_size);
 static bool subtract_symbol(char * value, char symbol);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const char * roman_add(const char * a, const char * b, char * result)
+static bool copy_string(char * destination, size_t destination_size, const char * source)
+{
+    size_t source_size = strlen(source) + 1;
+
+    if (source_size <= destination_size)
+    {
+        memcpy(destination, source, source_size);
+        return true;
+    }
+
+    return false;
+}
+
+static bool append_string(char * destination, size_t destination_size, const char * source)
+{
+    size_t source_size = strlen(source) + 1;
+    size_t destination_length = strlen(destination);
+
+    if (source_size + destination_length <= destination_size)
+    {
+        memcpy(destination + destination_length, source, source_size);
+        return true;
+    }
+
+    return false;
+}
+
+static void clear_string(char * destination)
+{
+    destination[0] = '\0';
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+const char * roman_add(const char * a, const char * b, char * result, size_t result_size)
 {
     char rhs[ROMAN_SIZE];
 
-    strcpy(result, a);
-    denormalize(result);
+    bool success;
 
-    strcpy(rhs, b);
-    denormalize(rhs);
-    strcat(result, rhs);
+    success = copy_string(result, result_size, a);
+    success = success && copy_string(rhs, sizeof(rhs), b);
+    success = success && denormalize(result, result_size);
+    success = success && denormalize(rhs, sizeof(rhs));
+    success = success && append_string(result, result_size, rhs);
+    success = success && normalize(result, result_size);
 
-    normalize(result);
+    if (!success)
+        clear_string(result);
 
     return result;
 }
 
-const char * roman_subtract(const char * a, const char * b, char * result)
+const char * roman_subtract(const char * a, const char * b, char * result, size_t result_size)
 {
     char rhs[ROMAN_SIZE];
 
     strcpy(result, a);
-    denormalize(result);
+    denormalize(result, result_size);
 
     strcpy(rhs, b);
-    denormalize(rhs);
+    denormalize(rhs, sizeof(rhs));
 
     for (int i = 0; i < strlen(rhs); ++i)
     {
         if (!subtract_symbol(result, rhs[i]))
         {
-            strcpy(result, "");
+            clear_string(result);
             return result;
         }
     }
 
-    normalize(result);
+    normalize(result, result_size);
 
     return result;
 }
@@ -59,12 +96,12 @@ typedef struct Translation
     const char * to;
 } Translation;
 
-static void translate_all(char * value, const Translation * table, int table_size);
+static bool translate_all(char * value, size_t value_size, const Translation * table, int table_size);
 static int compare_roman(const void * a, const void * b);
 
 #define countof(array) sizeof(array)/sizeof(array[0])
 
-static void denormalize(char * value)
+static bool denormalize(char * value, size_t value_size)
 {
     static const Translation table[] =
     {
@@ -76,10 +113,10 @@ static void denormalize(char * value)
         { "CM", "DCCCC" },
     };
 
-    translate_all(value, table, countof(table));
+    return translate_all(value, value_size, table, countof(table));
 }
 
-static void normalize(char * value)
+static bool normalize(char * value, size_t value_size)
 {
     static const Translation table[] =
     {
@@ -99,7 +136,7 @@ static void normalize(char * value)
 
     qsort(value, strlen(value), sizeof(char), compare_roman);
 
-    translate_all(value, table, countof(table));
+    return translate_all(value, value_size, table, countof(table));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -107,12 +144,23 @@ static void normalize(char * value)
 static bool replace(char * value, const char * substring, const char * replacement);
 static int roman_index(char c);
 
-static void translate_all(char * value, const Translation * table, int table_size)
+static bool translate_all(char * value, size_t value_size, const Translation * table, int table_size)
 {
     for(int index = 0; index < table_size; ++index)
     {
+        size_t value_length = strlen(value);
+        size_t from_length = strlen(table[index].from);
+        size_t to_length = strlen(table[index].to);
+
+        size_t size_increase = to_length > from_length ? to_length - from_length : 0;
+
+        if (size_increase > 0 && (value_length + size_increase) >= value_size)
+            return false;
+
         replace(value, table[index].from, table[index].to);
     }
+
+    return true;
 }
 
 static int compare_roman(const void * a, const void * b)

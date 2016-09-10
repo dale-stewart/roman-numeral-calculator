@@ -13,7 +13,7 @@ int main(void)
 	while (count--)
 	{
 		printf("%s\n", result);
-		roman_add(result, "I", result);
+		roman_add(result, "I", result, sizeof(result));
 	}
 
 	return 0;
