@@ -64,26 +64,34 @@ const char * roman_add(const char * a, const char * b, char * result, size_t res
     return result;
 }
 
+static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs)
+{
+    size_t rhs_length = strlen(rhs);
+
+    for (size_t i = 0; i < rhs_length; ++i)
+    {
+        if (!subtract_symbol(value, rhs[i]))
+            return false;
+    }
+
+    return true;
+}
+
 const char * roman_subtract(const char * a, const char * b, char * result, size_t result_size)
 {
     char rhs[ROMAN_SIZE];
 
-    strcpy(result, a);
-    denormalize(result, result_size);
+    bool success;
 
-    strcpy(rhs, b);
-    denormalize(rhs, sizeof(rhs));
+    success = copy_string(result, result_size, a);
+    success = success && copy_string(rhs, sizeof(rhs), b);
+    success = success && denormalize(result, result_size);
+    success = success && denormalize(rhs, sizeof(rhs));
+    success = success && subtract_all_symbols(result, result_size, rhs);
+    success = success && normalize(result, result_size);
 
-    for (int i = 0; i < strlen(rhs); ++i)
-    {
-        if (!subtract_symbol(result, rhs[i]))
-        {
-            clear_string(result);
-            return result;
-        }
-    }
-
-    normalize(result, result_size);
+    if (!success)
+        clear_string(result);
 
     return result;
 }
@@ -96,7 +104,7 @@ typedef struct Translation
     const char * to;
 } Translation;
 
-static bool translate_all(char * value, size_t value_size, const Translation * table, int table_size);
+static bool translate_all(char * value, size_t value_size, const Translation * table, size_t table_size);
 static int compare_roman(const void * a, const void * b);
 
 #define countof(array) sizeof(array)/sizeof(array[0])
@@ -144,9 +152,9 @@ static bool normalize(char * value, size_t value_size)
 static bool replace(char * value, const char * substring, const char * replacement);
 static int roman_index(char c);
 
-static bool translate_all(char * value, size_t value_size, const Translation * table, int table_size)
+static bool translate_all(char * value, size_t value_size, const Translation * table, size_t table_size)
 {
-    for(int index = 0; index < table_size; ++index)
+    for(size_t index = 0; index < table_size; ++index)
     {
         size_t value_length = strlen(value);
         size_t from_length = strlen(table[index].from);
@@ -200,7 +208,7 @@ static bool subtract_symbol(char * value, char symbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translate_first_match(char * value, const Translation * table, int table_size);
+static bool translate_first_match(char * value, const Translation * table, size_t table_size);
 
 static bool delete_symbol(char * value, char symbol)
 {
@@ -262,7 +270,7 @@ static bool borrow(char * value, char symbol)
     static const struct
     {
         const Translation * translation;
-        int size;
+        size_t size;
     }
     table[] =
     {
@@ -274,7 +282,7 @@ static bool borrow(char * value, char symbol)
         { borrow_D, countof(borrow_D) },
     };
 
-    int index = roman_index(symbol);
+    size_t index = roman_index(symbol);
 
     if (index < countof(table))
     {
@@ -286,9 +294,9 @@ static bool borrow(char * value, char symbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translate_first_match(char * value, const Translation * table, int table_size)
+static bool translate_first_match(char * value, const Translation * table, size_t table_size)
 {
-    for(int index = 0; index < table_size; ++index)
+    for(size_t index = 0; index < table_size; ++index)
     {
         if (replace(value, table[index].from, table[index].to))
             return true;
@@ -304,10 +312,10 @@ static bool replace(char * value, const char * substring, const char * replaceme
     char * substring_location = strstr(value, substring);
     if (substring_location)
     {
-        int substring_offset = substring_location - value;
-        int substring_length = strlen(substring);
-        int replacement_length = strlen(replacement);
-        int value_length = strlen(value);
+        size_t substring_offset = substring_location - value;
+        size_t substring_length = strlen(substring);
+        size_t replacement_length = strlen(replacement);
+        size_t value_length = strlen(value);
 
         if (substring_length != replacement_length)
         {
