@@ -7,7 +7,7 @@
 
 static void denormalize(char * value);
 static void normalize(char * value);
-static void subtract_symbol(char * value, char symbol);
+static bool subtract_symbol(char * value, char symbol);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,13 @@ const char * roman_subtract(const char * a, const char * b, char * result)
     denormalize(rhs);
 
     for (int i = 0; i < strlen(rhs); ++i)
-        subtract_symbol(result, rhs[i]);
+    {
+        if (!subtract_symbol(result, rhs[i]))
+        {
+            strcpy(result, "");
+            return result;
+        }
+    }
 
     normalize(result);
 
@@ -132,19 +138,21 @@ static int roman_index(char c)
 ///////////////////////////////////////////////////////////////////////////////
 
 static bool delete_symbol(char * value, char symbol);
-static void borrow(char * value, char symbol);
+static bool borrow(char * value, char symbol);
 
-static void subtract_symbol(char * value, char symbol)
+static bool subtract_symbol(char * value, char symbol)
 {
-    if (!delete_symbol(value, symbol))
-    {
-        borrow(value, symbol);
-    }
+    bool success = delete_symbol(value, symbol);
+
+    if (!success)
+        success = borrow(value, symbol);
+
+    return success;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void translate_first_match(char * value, const Translation * table, int table_size);
+static bool translate_first_match(char * value, const Translation * table, int table_size);
 
 static bool delete_symbol(char * value, char symbol)
 {
@@ -156,7 +164,7 @@ static bool delete_symbol(char * value, char symbol)
     return replace(value, match, "");
 }
 
-static void borrow(char * value, char symbol)
+static bool borrow(char * value, char symbol)
 {
     static const Translation borrow_I[] =
     {
@@ -222,19 +230,23 @@ static void borrow(char * value, char symbol)
 
     if (index < countof(table))
     {
-        translate_first_match(value, table[index].translation, table[index].size);
+        return translate_first_match(value, table[index].translation, table[index].size);
     }
+
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void translate_first_match(char * value, const Translation * table, int table_size)
+static bool translate_first_match(char * value, const Translation * table, int table_size)
 {
     for(int index = 0; index < table_size; ++index)
     {
         if (replace(value, table[index].from, table[index].to))
-            break;
+            return true;
     }
+
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
