@@ -7,7 +7,7 @@
 
 static bool denormalize(char * value, size_t value_size);
 static bool normalize(char * value, size_t value_size);
-static bool subtract_symbol(char * value, char symbol);
+static bool subtract_symbol(char * value, size_t value_size, char symbol);
 static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs);
 static bool copy_string(char * destination, size_t destination_size, const char * source);
 static bool append_string(char * destination, size_t destination_size, const char * source);
@@ -185,14 +185,14 @@ static int roman_index(char c)
 ///////////////////////////////////////////////////////////////////////////////
 
 static bool delete_symbol(char * value, char symbol);
-static bool borrow(char * value, char symbol);
+static bool borrow(char * value, size_t value_size, char symbol);
 
-static bool subtract_symbol(char * value, char symbol)
+static bool subtract_symbol(char * value, size_t value_size, char symbol)
 {
     bool success = delete_symbol(value, symbol);
 
     if (!success)
-        success = borrow(value, symbol);
+        success = borrow(value, value_size, symbol);
 
     return success;
 }
@@ -203,7 +203,7 @@ static bool subtract_all_symbols(char * value, size_t value_size, const char * r
 
     for (size_t i = 0; i < rhs_length; ++i)
     {
-        if (!subtract_symbol(value, rhs[i]))
+        if (!subtract_symbol(value, value_size, rhs[i]))
             return false;
     }
 
@@ -212,7 +212,7 @@ static bool subtract_all_symbols(char * value, size_t value_size, const char * r
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translate_first_match(char * value, const Translation * table, size_t table_size);
+static bool translate_first_match(char * value, size_t value_size, const Translation * table, size_t table_size);
 
 static bool delete_symbol(char * value, char symbol)
 {
@@ -224,7 +224,7 @@ static bool delete_symbol(char * value, char symbol)
     return replace(value, match, "");
 }
 
-static bool borrow(char * value, char symbol)
+static bool borrow(char * value, size_t value_size, char symbol)
 {
     static const Translation borrow_I[] =
     {
@@ -290,7 +290,7 @@ static bool borrow(char * value, char symbol)
 
     if (index < countof(table))
     {
-        return translate_first_match(value, table[index].translation, table[index].size);
+        return translate_first_match(value, value_size, table[index].translation, table[index].size);
     }
 
     return false;
@@ -298,10 +298,22 @@ static bool borrow(char * value, char symbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translate_first_match(char * value, const Translation * table, size_t table_size)
+static bool translate_first_match(char * value, size_t value_size, const Translation * table, size_t table_size)
 {
     for(size_t index = 0; index < table_size; ++index)
     {
+        if (strstr(value, table[index].from))
+        {
+            size_t value_length = strlen(value);
+            size_t from_length = strlen(table[index].from);
+            size_t to_length = strlen(table[index].to);
+
+            size_t size_increase = to_length > from_length ? to_length - from_length : 0;
+
+            if (size_increase > 0 && (value_length + size_increase) >= value_size)
+                return false;
+        }
+
         if (replace(value, table[index].from, table[index].to))
             return true;
     }

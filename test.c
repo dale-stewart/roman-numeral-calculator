@@ -263,6 +263,12 @@ START_TEST(denormalize_too_large_returns_empty_string)
 }
 END_TEST
 
+START_TEST(subtraction_borrow_too_large_returns_empty_string)
+{
+    ASSERT_ROMAN_SUBTRACT_EQ("MMMMMMMMMMMMMMMMMMM", "I", "");
+}
+END_TEST
+
 ///////////////////////////////////////////////////////////
 
 Suite * roman_suite(void)
@@ -322,6 +328,7 @@ Suite * roman_suite(void)
     tcase_add_test(tc, argument_too_large_returns_empty_string);
     tcase_add_test(tc, result_too_large_returns_empty_string);
     tcase_add_test(tc, denormalize_too_large_returns_empty_string);
+    tcase_add_test(tc, subtraction_borrow_too_large_returns_empty_string);
 
     suite_add_tcase(s, tc);
 
