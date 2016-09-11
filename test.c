@@ -341,6 +341,10 @@ int main(void)
     Suite *s;
     SRunner *sr;
 
+    int clang_static_analyzer_will_find_this;
+
+    clang_static_analyzer_will_find_this = 1;
+
     s = roman_suite();
     sr = srunner_create(s);
 
