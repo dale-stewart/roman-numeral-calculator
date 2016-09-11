@@ -140,6 +140,7 @@ static void clear_string(char * destination)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static bool is_replacement_too_big(char * value, size_t value_size, const char * from, const char * to);
 static bool replace(char * value, const char * substring, const char * replacement);
 static int roman_index(char c);
 
@@ -147,16 +148,13 @@ static bool translate_all(char * value, size_t value_size, const Translation * t
 {
     for(size_t index = 0; index < table_size; ++index)
     {
-        size_t value_length = strlen(value);
-        size_t from_length = strlen(table[index].from);
-        size_t to_length = strlen(table[index].to);
+        const char * from = table[index].from;
+        const char * to = table[index].to;
 
-        size_t size_increase = to_length > from_length ? to_length - from_length : 0;
-
-        if (size_increase > 0 && (value_length + size_increase) >= value_size)
+        if (is_replacement_too_big(value, value_size, from, to))
             return false;
 
-        replace(value, table[index].from, table[index].to);
+        replace(value, from, to);
     }
 
     return true;
@@ -302,19 +300,13 @@ static bool translate_first_match(char * value, size_t value_size, const Transla
 {
     for(size_t index = 0; index < table_size; ++index)
     {
-        if (strstr(value, table[index].from))
-        {
-            size_t value_length = strlen(value);
-            size_t from_length = strlen(table[index].from);
-            size_t to_length = strlen(table[index].to);
+        const char * from = table[index].from;
+        const char * to = table[index].to;
 
-            size_t size_increase = to_length > from_length ? to_length - from_length : 0;
+        if (is_replacement_too_big(value, value_size, from, to))
+            return false;
 
-            if (size_increase > 0 && (value_length + size_increase) >= value_size)
-                return false;
-        }
-
-        if (replace(value, table[index].from, table[index].to))
+        if (replace(value, from, to))
             return true;
     }
 
@@ -322,6 +314,23 @@ static bool translate_first_match(char * value, size_t value_size, const Transla
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+static bool is_replacement_too_big(char * value, size_t value_size, const char * from, const char * to)
+{
+    if (strstr(value, from))
+    {
+        size_t value_length = strlen(value);
+        size_t from_length = strlen(from);
+        size_t to_length = strlen(to);
+
+        size_t size_increase = to_length > from_length ? to_length - from_length : 0;
+
+        if (size_increase > 0 && (value_length + size_increase) >= value_size)
+            return true;
+    }
+
+    return false;
+}
 
 static bool replace(char * value, const char * substring, const char * replacement)
 {
