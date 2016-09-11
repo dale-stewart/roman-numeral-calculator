@@ -1,5 +1,5 @@
 TEST_linkflags = `pkg-config --libs check`
-TEST_cflags = `pkg-config --cflags check` -g -std=c99 -Wall -Werror
+TEST_cflags = `pkg-config --cflags check` -g -std=c99 -Wall -Werror --coverage
 CC = gcc
 
 .PHONY : all
@@ -41,3 +41,10 @@ build/exhaustive.o: exhaustive.c
 
 clean :
 	@rm -rf build/
+
+.PHONY : coverage
+
+coverage : clean unit_test
+	@lcov --capture --directory build --output-file build/coverage.info
+	@genhtml build/coverage.info --output-directory build/coverage
+	@(sensible-browser build/coverage/index.html &> /dev/null &)

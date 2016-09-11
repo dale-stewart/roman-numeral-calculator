@@ -36,3 +36,13 @@ scan-view /tmp/scan-build-2016-09-10-210356-21567-1
 
 Just enter that command, and it will open a browser window for you navigate.  If there are no errors,
 you will not be given such a command, as there is no report to examine.
+
+Also, to measure test coverage, you will need to enter the following commands:
+
+```
+sudo apt-get install lcov
+make coverage
+```
+
+This will measure test coverage of the unit test, and then open a web browser with a report of the
+measured test coverage.
