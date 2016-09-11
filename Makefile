@@ -1,5 +1,5 @@
 TEST_linkflags = `pkg-config --libs check`
-TEST_cflags = `pkg-config --cflags check` -g -std=c99
+TEST_cflags = `pkg-config --cflags check` -g -std=c99 -Wall -Werror
 CC = gcc
 
 .PHONY : all

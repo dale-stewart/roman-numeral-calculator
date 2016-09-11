@@ -341,10 +341,6 @@ int main(void)
     Suite *s;
     SRunner *sr;
 
-    int clang_static_analyzer_will_find_this;
-
-    clang_static_analyzer_will_find_this = 1;
-
     s = roman_suite();
     sr = srunner_create(s);
 
@@ -352,4 +348,11 @@ int main(void)
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
+char const *p;
+void clang_static_analyzer_test()
+{
+    char const str[] = "string";
+    p = str; // warn
 }
