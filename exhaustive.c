@@ -6,7 +6,8 @@ int main(void)
 {
 	char result[ROMAN_SIZE];
 
-	strcpy(result, "I");
+	strncpy(result, "I", sizeof(result) - 1);
+	result[sizeof(result) - 1] = '\0';
 
 	int count = 3999;
 
