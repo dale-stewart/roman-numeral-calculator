@@ -45,8 +45,9 @@ clean :
 .PHONY : coverage
 
 coverage : clean all
-	@lcov --capture --directory build --output-file build/coverage.gcov
+	gcov -o build *.c
 
-coverage_report: coverage
-	@genhtml build/coverage.gcov --output-directory build/coverage
+coverage_report: clean all
+	@lcov --capture --directory build --output-file build/coverage.info
+	@genhtml build/coverage.info --output-directory build/coverage
 	@(sensible-browser build/coverage/index.html &> /dev/null &)
