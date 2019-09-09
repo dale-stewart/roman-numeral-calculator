@@ -9,7 +9,5 @@ addons:
 
 script:
 - sudo apt-get install check
-- make clean
 - build-wrapper-linux-x86-64 --out-dir bw-output make all
-- make unit_test
 - sonar-scanner
