@@ -23,7 +23,7 @@ To perform static analysis on the code, you can additionally install clang, whic
 clang static analyzer tool:
 
 ```
-sudo apt-get install clang
+sudo apt-get install clang clang-tools
 scan-build make
 ```
 

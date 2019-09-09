@@ -41,6 +41,7 @@ build/exhaustive.o: exhaustive.c
 
 clean :
 	@rm -rf build/
+	@-rm *.gcov
 
 .PHONY : coverage
 
