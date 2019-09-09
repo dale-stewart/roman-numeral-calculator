@@ -1,6 +1,9 @@
 dist: trusty
 sudo: true
 
+git:
+  depth: false
+
 addons:
   sonarcloud:
     organization: dale-stewart
