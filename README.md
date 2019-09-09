@@ -41,8 +41,8 @@ Also, to measure test coverage, you will need to enter the following commands:
 
 ```
 sudo apt-get install lcov
-make coverage
+make coverage_report
 ```
 
-This will measure test coverage of the unit test, and then open a web browser with a report of the
+This will measure test coverage of the tests, and then open a web browser with a report of the
 measured test coverage.

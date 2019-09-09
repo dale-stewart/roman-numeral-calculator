@@ -8,6 +8,6 @@ addons:
       secure: sX73la+yrOWKdR3TIBrf0hYoUvuiQVqiyURbKjdTGJ8u15RL7lcJbFEKWxDwzCnb5gqC1nyUqazg0VKM9LHNLCB78MBduDrZzpNUKbhEvz+eTIxc8WljyN2VvH9MaOyigB3CDHjVHzClN0gub9Rl02fV6U1BMnfuGSHHUN/vMExd7wWq8I5mRIK3Yh/o0OR/ldZHCVj1IRS2E3VxdSz98FdWIW4gKM1C5UdoimStCpiYaw9h/1vDwvZsTFlyfq2z3H9SvfNjNQIPmZ3cmEFF7/3Tqc6mxNspR1ExkJ755juREEuVrdyJXgYQmnF07dozKEpXiMoiTj8yHj25Zcj2MJs+xX2STrP8K4OUTlO/kxpRmFTUHIXVEF06/FLdKSvjRCJ3oftKwygsDCnT3XHbRZOU0mD1zcxD4PWBYd7orKd3g28I9CpHGVbL3bAmM4xDY1+T9TEhPOkBXfqPM+434VzUIqnxk7YTJ19lqv0SWAc5UpiV2psG39y12kTWOKF1/Ly38ohyiKiA570QCyJeprZMixwWQKg6Mt8UQKV6eooS2Zqw3ladV90kMC0Jz+4LbtI/j0CX7p/0NWyJWHU5EH9pnwy99NAh7URG4VO/q1nJZ3ZWbcAN3khgzneZICyKG1oZu2WaVVE/vJcdwkN6FOs5DpIVHp+qr6ErVRMWcLA=
 
 script:
-- sudo apt-get install check
-- build-wrapper-linux-x86-64 --out-dir bw-output make all
+- sudo apt-get install check lcov
+- build-wrapper-linux-x86-64 --out-dir bw-output make coverage
 - sonar-scanner
