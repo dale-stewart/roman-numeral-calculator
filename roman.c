@@ -373,7 +373,7 @@ static bool translateFirstMatch(char * value,
     bool success = false;
 
     for(size_t index = 0;
-        (index < tableSize) && !success;
+        (index < tableSize) && (!success);
         ++index)
     {
         const char * from = table[index].from;
@@ -406,8 +406,8 @@ static bool isReplacementTooBig(char * value,
         size_t fromLength = strlen(from);
         size_t toLength = strlen(to);
 
-        size_t sizeIncrease = toLength > fromLength ?
-                              toLength - fromLength :
+        size_t sizeIncrease = (toLength > fromLength) ?
+                              (toLength - fromLength) :
                               0;
 
         if ((sizeIncrease > 0) && ((valueLength + sizeIncrease) >= valueSize))
@@ -436,7 +436,7 @@ static bool replace(char * value,
         {
             memmove(substringLocation + replacementLength,
                     substringLocation + substringLength,
-                    valueLength - substringLength - substringOffset + 1);
+                    (valueLength - substringLength - substringOffset) + 1);
         }
 
         memcpy(substringLocation, replacement, replacementLength);
