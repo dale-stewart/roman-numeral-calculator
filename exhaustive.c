@@ -15,7 +15,7 @@ int main(void)
     while (count != 0)
     {
         printf("%s\n", result);
-        roman_add(result, "I", result, sizeof(result));
+        romanAdd(result, "I", result, sizeof(result));
         --count;
     }
 

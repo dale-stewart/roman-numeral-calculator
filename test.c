@@ -6,10 +6,10 @@
 static char result[ROMAN_SIZE];
 
 #define ASSERT_ROMAN_ADD_EQ(a, b, expected) \
-        ck_assert_str_eq(roman_add(a, b, result, sizeof(result)), expected);
+        ck_assert_str_eq(romanAdd(a, b, result, sizeof(result)), expected);
 
 #define ASSERT_ROMAN_SUBTRACT_EQ(a, b, expected) \
-        ck_assert_str_eq(roman_subtract(a, b, result, sizeof(result)), expected);
+        ck_assert_str_eq(romanSubtract(a, b, result, sizeof(result)), expected);
 
 START_TEST(one_plus_one_is_two)
     ASSERT_ROMAN_ADD_EQ("I", "I", "II");
