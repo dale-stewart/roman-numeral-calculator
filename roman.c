@@ -187,7 +187,10 @@ static bool translateAll(char * value,
                          size_t table_size)
 {
     bool success = true;
-    for(size_t index = 0; index < table_size; ++index)
+
+    for(size_t index = 0;
+        index < table_size && success;
+        ++index)
     {
         const char * from = table[index].from;
         const char * to = table[index].to;
@@ -195,10 +198,11 @@ static bool translateAll(char * value,
         if (isReplacementTooBig(value, valueSize, from, to))
         {
             success = false;
-            break;
         }
-
-        replace(value, from, to);
+        else
+        {
+            replace(value, from, to);
+        }
     }
 
     return success;
@@ -252,12 +256,13 @@ static bool subtractAllSymbols(char * value,
     bool success = true;
     size_t rhs_length = strlen(rhs);
 
-    for (size_t i = 0; i < rhs_length; ++i)
+    for (size_t i = 0;
+        i < rhs_length && success;
+        ++i)
     {
         if (!subtractSymbol(value, valueSize, rhs[i]))
         {
             success = false;
-            break;
         }
     }
 
@@ -367,20 +372,19 @@ static bool translateFirstMatch(char * value,
 {
     bool success = false;
 
-    for(size_t index = 0; index < table_size; ++index)
+    for(size_t index = 0;
+        index < table_size && !success;
+        ++index)
     {
         const char * from = table[index].from;
         const char * to = table[index].to;
 
-        if (isReplacementTooBig(value, valueSize, from, to))
+        if (!isReplacementTooBig(value, valueSize, from, to))
         {
-            break;
-        }
-
-        if (replace(value, from, to))
-        {
-            success = true;
-            break;
+            if (replace(value, from, to))
+            {
+                success = true;
+            }
         }
     }
 
