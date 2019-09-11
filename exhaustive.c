@@ -12,12 +12,12 @@ int main(void)
 
     int16_t count = 3999;
 
-    do
+    while (count != 0)
     {
         printf("%s\n", result);
         roman_add(result, "I", result, sizeof(result));
+        --count;
     }
-    while (--count);
 
     return 0;
 }
