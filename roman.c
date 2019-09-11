@@ -84,7 +84,7 @@ typedef struct Translation
 static bool translateAll(char * value,
                          size_t valueSize,
                          const Translation * table,
-                         size_t table_size);
+                         size_t tableSize);
 
 static int compareRoman(const void * a, const void * b);
 
@@ -154,7 +154,7 @@ static bool appendString(char * destination,
     size_t source_size = strlen(source) + 1;
     size_t destination_length = strlen(destination);
 
-    if (source_size + destination_length <= destinationSize)
+    if ((source_size + destination_length) <= destinationSize)
     {
         memcpy(destination + destination_length, source, source_size);
         success = true;
@@ -184,12 +184,12 @@ static int romanIndex(char c);
 static bool translateAll(char * value,
                          size_t valueSize,
                          const Translation * table,
-                         size_t table_size)
+                         size_t tableSize)
 {
     bool success = true;
 
     for(size_t index = 0;
-        index < table_size && success;
+        (index < tableSize) && success;
         ++index)
     {
         const char * from = table[index].from;
@@ -257,7 +257,7 @@ static bool subtractAllSymbols(char * value,
     size_t rhs_length = strlen(rhs);
 
     for (size_t i = 0;
-        i < rhs_length && success;
+        (i < rhs_length) && success;
         ++i)
     {
         if (!subtractSymbol(value, valueSize, rhs[i]))
@@ -274,7 +274,7 @@ static bool subtractAllSymbols(char * value,
 static bool translateFirstMatch(char * value,
                                 size_t valueSize,
                                 const Translation * table,
-                                size_t table_size);
+                                size_t tableSize);
 
 static bool delete_symbol(char * value, char symbol)
 {
@@ -368,12 +368,12 @@ static bool borrow(char * value, size_t valueSize, char symbol)
 static bool translateFirstMatch(char * value,
                                 size_t valueSize,
                                 const Translation * table,
-                                size_t table_size)
+                                size_t tableSize)
 {
     bool success = false;
 
     for(size_t index = 0;
-        index < table_size && !success;
+        (index < tableSize) && !success;
         ++index)
     {
         const char * from = table[index].from;
@@ -410,7 +410,7 @@ static bool isReplacementTooBig(char * value,
                               toLength - fromLength :
                               0;
 
-        if (sizeIncrease > 0 && (valueLength + sizeIncrease) >= valueSize)
+        if ((sizeIncrease > 0) && ((valueLength + sizeIncrease) >= valueSize))
         {
             success = true;
         }
