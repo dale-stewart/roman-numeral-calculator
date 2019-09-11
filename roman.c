@@ -28,18 +28,18 @@ static void clearString(char * destination);
 const char * romanAdd(const char * a,
                       const char * b,
                       char * result,
-                      size_t result_size)
+                      size_t resultSize)
 {
     char rhs[ROMAN_SIZE];
 
     bool success;
 
-    success = copyString(result, result_size, a);
+    success = copyString(result, resultSize, a);
     success = success && copyString(rhs, sizeof(rhs), b);
-    success = success && denormalize(result, result_size);
+    success = success && denormalize(result, resultSize);
     success = success && denormalize(rhs, sizeof(rhs));
-    success = success && appendString(result, result_size, rhs);
-    success = success && normalize(result, result_size);
+    success = success && appendString(result, resultSize, rhs);
+    success = success && normalize(result, resultSize);
 
     if (!success)
     {
@@ -52,18 +52,18 @@ const char * romanAdd(const char * a,
 const char * romanSubtract(const char * a,
                            const char * b,
                            char * result,
-                           size_t result_size)
+                           size_t resultSize)
 {
     char rhs[ROMAN_SIZE];
 
     bool success;
 
-    success = copyString(result, result_size, a);
+    success = copyString(result, resultSize, a);
     success = success && copyString(rhs, sizeof(rhs), b);
-    success = success && denormalize(result, result_size);
+    success = success && denormalize(result, resultSize);
     success = success && denormalize(rhs, sizeof(rhs));
-    success = success && subtractAllSymbols(result, result_size, rhs);
-    success = success && normalize(result, result_size);
+    success = success && subtractAllSymbols(result, resultSize, rhs);
+    success = success && normalize(result, resultSize);
 
     if (!success)
     {
