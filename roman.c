@@ -8,14 +8,23 @@
 static bool denormalize(char * value, size_t value_size);
 static bool normalize(char * value, size_t value_size);
 static bool subtract_symbol(char * value, size_t value_size, char symbol);
-static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs);
-static bool copy_string(char * destination, size_t destination_size, const char * source);
-static bool append_string(char * destination, size_t destination_size, const char * source);
+static bool subtract_all_symbols(char * value,
+                                 size_t value_size,
+                                 const char * rhs);
+static bool copy_string(char * destination,
+                        size_t destination_size,
+                        const char * source);
+static bool append_string(char * destination,
+                          size_t destination_size,
+                          const char * source);
 static void clear_string(char * destination);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const char * roman_add(const char * a, const char * b, char * result, size_t result_size)
+const char * roman_add(const char * a,
+                       const char * b,
+                       char * result,
+                       size_t result_size)
 {
     char rhs[ROMAN_SIZE];
 
@@ -29,12 +38,17 @@ const char * roman_add(const char * a, const char * b, char * result, size_t res
     success = success && normalize(result, result_size);
 
     if (!success)
+    {
         clear_string(result);
+    }
 
     return result;
 }
 
-const char * roman_subtract(const char * a, const char * b, char * result, size_t result_size)
+const char * roman_subtract(const char * a,
+                            const char * b,
+                            char * result,
+                            size_t result_size)
 {
     char rhs[ROMAN_SIZE];
 
@@ -48,7 +62,9 @@ const char * roman_subtract(const char * a, const char * b, char * result, size_
     success = success && normalize(result, result_size);
 
     if (!success)
+    {
         clear_string(result);
+    }
 
     return result;
 }
@@ -61,7 +77,11 @@ typedef struct Translation
     const char * to;
 } Translation;
 
-static bool translate_all(char * value, size_t value_size, const Translation * table, size_t table_size);
+static bool translate_all(char * value,
+                          size_t value_size,
+                          const Translation * table,
+                          size_t table_size);
+
 static int compare_roman(const void * a, const void * b);
 
 #define countof(array) sizeof(array)/sizeof(array[0])
@@ -106,7 +126,9 @@ static bool normalize(char * value, size_t value_size)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool copy_string(char * destination, size_t destination_size, const char * source)
+static bool copy_string(char * destination,
+                        size_t destination_size,
+                        const char * source)
 {
     size_t source_size = strlen(source) + 1;
 
@@ -119,7 +141,9 @@ static bool copy_string(char * destination, size_t destination_size, const char 
     return false;
 }
 
-static bool append_string(char * destination, size_t destination_size, const char * source)
+static bool append_string(char * destination,
+                          size_t destination_size,
+                          const char * source)
 {
     size_t source_size = strlen(source) + 1;
     size_t destination_length = strlen(destination);
@@ -140,11 +164,21 @@ static void clear_string(char * destination)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool is_replacement_too_big(char * value, size_t value_size, const char * from, const char * to);
-static bool replace(char * value, const char * substring, const char * replacement);
+static bool is_replacement_too_big(char * value,
+                                   size_t value_size,
+                                   const char * from,
+                                   const char * to);
+
+static bool replace(char * value,
+                    const char * substring,
+                    const char * replacement);
+
 static int roman_index(char c);
 
-static bool translate_all(char * value, size_t value_size, const Translation * table, size_t table_size)
+static bool translate_all(char * value,
+                          size_t value_size,
+                          const Translation * table,
+                          size_t table_size)
 {
     for(size_t index = 0; index < table_size; ++index)
     {
@@ -152,7 +186,9 @@ static bool translate_all(char * value, size_t value_size, const Translation * t
         const char * to = table[index].to;
 
         if (is_replacement_too_big(value, value_size, from, to))
+        {
             return false;
+        }
 
         replace(value, from, to);
     }
@@ -174,8 +210,12 @@ static int roman_index(char c)
     int index;
 
     for (index = 0; index < countof(order); ++index)
+    {
         if (c == order[index])
+        {
             break;
+        }
+    }
 
     return index;
 }
@@ -190,19 +230,25 @@ static bool subtract_symbol(char * value, size_t value_size, char symbol)
     bool success = delete_symbol(value, symbol);
 
     if (!success)
+    {
         success = borrow(value, value_size, symbol);
+    }
 
     return success;
 }
 
-static bool subtract_all_symbols(char * value, size_t value_size, const char * rhs)
+static bool subtract_all_symbols(char * value,
+                                 size_t value_size,
+                                 const char * rhs)
 {
     size_t rhs_length = strlen(rhs);
 
     for (size_t i = 0; i < rhs_length; ++i)
     {
         if (!subtract_symbol(value, value_size, rhs[i]))
+        {
             return false;
+        }
     }
 
     return true;
@@ -210,7 +256,10 @@ static bool subtract_all_symbols(char * value, size_t value_size, const char * r
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translate_first_match(char * value, size_t value_size, const Translation * table, size_t table_size);
+static bool translate_first_match(char * value,
+                                  size_t value_size,
+                                  const Translation * table,
+                                  size_t table_size);
 
 static bool delete_symbol(char * value, char symbol)
 {
@@ -288,7 +337,10 @@ static bool borrow(char * value, size_t value_size, char symbol)
 
     if (index < countof(table))
     {
-        return translate_first_match(value, value_size, table[index].translation, table[index].size);
+        return translate_first_match(value,
+                                     value_size,
+                                     table[index].translation,
+                                     table[index].size);
     }
 
     return false;
@@ -296,7 +348,10 @@ static bool borrow(char * value, size_t value_size, char symbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translate_first_match(char * value, size_t value_size, const Translation * table, size_t table_size)
+static bool translate_first_match(char * value,
+                                  size_t value_size,
+                                  const Translation * table,
+                                  size_t table_size)
 {
     for(size_t index = 0; index < table_size; ++index)
     {
@@ -304,10 +359,14 @@ static bool translate_first_match(char * value, size_t value_size, const Transla
         const char * to = table[index].to;
 
         if (is_replacement_too_big(value, value_size, from, to))
+        {
             return false;
+        }
 
         if (replace(value, from, to))
+        {
             return true;
+        }
     }
 
     return false;
@@ -315,7 +374,10 @@ static bool translate_first_match(char * value, size_t value_size, const Transla
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool is_replacement_too_big(char * value, size_t value_size, const char * from, const char * to)
+static bool is_replacement_too_big(char * value,
+                                   size_t value_size,
+                                   const char * from,
+                                   const char * to)
 {
     if (strstr(value, from))
     {
@@ -323,16 +385,22 @@ static bool is_replacement_too_big(char * value, size_t value_size, const char *
         size_t from_length = strlen(from);
         size_t to_length = strlen(to);
 
-        size_t size_increase = to_length > from_length ? to_length - from_length : 0;
+        size_t size_increase = to_length > from_length ?
+                               to_length - from_length :
+                               0;
 
         if (size_increase > 0 && (value_length + size_increase) >= value_size)
+        {
             return true;
+        }
     }
 
     return false;
 }
 
-static bool replace(char * value, const char * substring, const char * replacement)
+static bool replace(char * value,
+                    const char * substring,
+                    const char * replacement)
 {
     char * substring_location = strstr(value, substring);
     if (substring_location)
