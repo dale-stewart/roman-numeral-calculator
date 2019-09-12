@@ -1,5 +1,5 @@
-#ifndef __roman_h__
-#define __roman_h__
+#ifndef roman_h_included
+#define roman_h_included
 
 #include <stddef.h>
 

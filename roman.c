@@ -88,7 +88,7 @@ static bool translateAll(char * value,
 
 static int compareRoman(const void * a, const void * b);
 
-#define countof(array) sizeof(array)/sizeof(array[0])
+#define COUNTOF(array) (sizeof(array) / sizeof(array[0]))
 
 static bool denormalize(char * value, size_t valueSize)
 {
@@ -102,7 +102,7 @@ static bool denormalize(char * value, size_t valueSize)
         { "CM", "DCCCC" },
     };
 
-    return translateAll(value, valueSize, table, countof(table));
+    return translateAll(value, valueSize, table, COUNTOF(table));
 }
 
 static bool normalize(char * value, size_t valueSize)
@@ -125,7 +125,7 @@ static bool normalize(char * value, size_t valueSize)
 
     qsort(value, strlen(value), sizeof(char), compareRoman);
 
-    return translateAll(value, valueSize, table, countof(table));
+    return translateAll(value, valueSize, table, COUNTOF(table));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,11 +135,11 @@ static bool copyString(char * destination,
                         const char * source)
 {
     bool success = false;
-    size_t source_size = strlen(source) + 1;
+    size_t sourceSize = strlen(source) + 1;
 
-    if (source_size <= destinationSize)
+    if (sourceSize <= destinationSize)
     {
-        memcpy(destination, source, source_size);
+        memcpy(destination, source, sourceSize);
         success = true;
     }
 
@@ -151,12 +151,12 @@ static bool appendString(char * destination,
                           const char * source)
 {
     bool success = false;
-    size_t source_size = strlen(source) + 1;
-    size_t destination_length = strlen(destination);
+    size_t sourceSize = strlen(source) + 1;
+    size_t destinationLength = strlen(destination);
 
-    if ((source_size + destination_length) <= destinationSize)
+    if ((sourceSize + destinationLength) <= destinationSize)
     {
-        memcpy(destination + destination_length, source, source_size);
+        memcpy(destination + destinationLength, source, sourceSize);
         success = true;
     }
 
@@ -221,12 +221,10 @@ static int romanIndex(char c)
 
     int index;
 
-    for (index = 0; index < countof(order); ++index)
+    for (index = 0;
+        (index < COUNTOF(order)) && (c != order[index]);
+        ++index)
     {
-        if (c == order[index])
-        {
-            break;
-        }
     }
 
     return index;
@@ -254,10 +252,10 @@ static bool subtractAllSymbols(char * value,
                                  const char * rhs)
 {
     bool success = true;
-    size_t rhs_length = strlen(rhs);
+    size_t rhsLength = strlen(rhs);
 
     for (size_t i = 0;
-        (i < rhs_length) && success;
+        (i < rhsLength) && success;
         ++i)
     {
         if (!subtractSymbol(value, valueSize, rhs[i]))
@@ -342,17 +340,17 @@ static bool borrow(char * value, size_t valueSize, char symbol)
     }
     table[] =
     {
-        { borrow_I, countof(borrow_I) },
-        { borrow_V, countof(borrow_V) },
-        { borrow_X, countof(borrow_X) },
-        { borrow_L, countof(borrow_L) },
-        { borrow_C, countof(borrow_C) },
-        { borrow_D, countof(borrow_D) },
+        { borrow_I, COUNTOF(borrow_I) },
+        { borrow_V, COUNTOF(borrow_V) },
+        { borrow_X, COUNTOF(borrow_X) },
+        { borrow_L, COUNTOF(borrow_L) },
+        { borrow_C, COUNTOF(borrow_C) },
+        { borrow_D, COUNTOF(borrow_D) },
     };
 
     size_t index = romanIndex(symbol);
 
-    if (index < countof(table))
+    if (index < COUNTOF(table))
     {
         success = translateFirstMatch(value,
                                       valueSize,
@@ -379,7 +377,7 @@ static bool translateFirstMatch(char * value,
         const char * from = table[index].from;
         const char * to = table[index].to;
 
-        if (!isReplacementTooBig(value, valueSize, from, to) &&
+        if ((!isReplacementTooBig(value, valueSize, from, to)) &&
             replace(value, from, to))
         {
             success = true;
@@ -398,7 +396,7 @@ static bool isReplacementTooBig(const char * value,
 {
     bool success = false;
 
-    if (strstr(value, from))
+    if (strstr(value, from) != 0)
     {
         size_t valueLength = strlen(value);
         size_t fromLength = strlen(from);
