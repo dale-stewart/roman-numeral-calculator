@@ -1,15 +1,15 @@
+#include "roman.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "roman.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool denormalize(char * value, size_t valueSize);
+static bool denormalize(const char * value, size_t valueSize);
 static bool normalize(char * value, size_t valueSize);
-static bool subtractSymbol(char * value, size_t valueSize, char symbol);
+static bool subtractSymbol(const char * value, size_t valueSize, char symbol);
 
-static bool subtractAllSymbols(char * value,
+static bool subtractAllSymbols(const char * value,
                                size_t valueSize,
                                const char * rhs);
 
@@ -81,7 +81,7 @@ typedef struct Translation
     const char * to;
 } Translation;
 
-static bool translateAll(char * value,
+static bool translateAll(const char * value,
                          size_t valueSize,
                          const Translation * table,
                          size_t tableSize);
@@ -90,7 +90,7 @@ static int compareRoman(const void * a, const void * b);
 
 #define COUNTOF(array) (sizeof(array) / sizeof(array[0]))
 
-static bool denormalize(char * value, size_t valueSize)
+static bool denormalize(const char * value, size_t valueSize)
 {
     static const Translation table[] =
     {
@@ -139,7 +139,7 @@ static bool copyString(char * destination,
 
     if (sourceSize <= destinationSize)
     {
-        memcpy(destination, source, sourceSize);
+        (void)memcpy(destination, source, sourceSize);
         success = true;
     }
 
@@ -156,7 +156,7 @@ static bool appendString(char * destination,
 
     if ((sourceSize + destinationLength) <= destinationSize)
     {
-        memcpy(destination + destinationLength, source, sourceSize);
+        (void)memcpy(destination + destinationLength, source, sourceSize);
         success = true;
     }
 
@@ -175,13 +175,13 @@ static bool isReplacementTooBig(const char * value,
                                 const char * from,
                                 const char * to);
 
-static bool replace(char * value,
+static bool replace(const char * value,
                     const char * substring,
                     const char * replacement);
 
-static int romanIndex(char c);
+static size_t romanIndex(char c);
 
-static bool translateAll(char * value,
+static bool translateAll(const char * value,
                          size_t valueSize,
                          const Translation * table,
                          size_t tableSize)
@@ -201,7 +201,7 @@ static bool translateAll(char * value,
         }
         else
         {
-            replace(value, from, to);
+            (void)replace(value, from, to);
         }
     }
 
@@ -210,16 +210,17 @@ static bool translateAll(char * value,
 
 static int compareRoman(const void * a, const void * b)
 {
-    return romanIndex(*(const char *)b) - romanIndex(*(const char *)a);
+    return (int)romanIndex(*(const char *)b) -
+           (int)romanIndex(*(const char *)a);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static int romanIndex(char c)
+static size_t romanIndex(char c)
 {
     static const char order[] = {'I','V','X','L','C','D','M'};
 
-    int index = 0;
+    size_t index = 0;
 
     while ((index < COUNTOF(order)) && (c != order[index]))
     {
@@ -231,10 +232,10 @@ static int romanIndex(char c)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool delete_symbol(char * value, char symbol);
-static bool borrow(char * value, size_t valueSize, char symbol);
+static bool delete_symbol(const char * value, char symbol);
+static bool borrow(const char * value, size_t valueSize, char symbol);
 
-static bool subtractSymbol(char * value, size_t valueSize, char symbol)
+static bool subtractSymbol(const char * value, size_t valueSize, char symbol)
 {
     bool success = delete_symbol(value, symbol);
 
@@ -246,9 +247,9 @@ static bool subtractSymbol(char * value, size_t valueSize, char symbol)
     return success;
 }
 
-static bool subtractAllSymbols(char * value,
-                                 size_t valueSize,
-                                 const char * rhs)
+static bool subtractAllSymbols(const char * value,
+                               size_t valueSize,
+                               const char * rhs)
 {
     bool success = true;
     size_t rhsLength = strlen(rhs);
@@ -268,12 +269,12 @@ static bool subtractAllSymbols(char * value,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translateFirstMatch(char * value,
+static bool translateFirstMatch(const char * value,
                                 size_t valueSize,
                                 const Translation * table,
                                 size_t tableSize);
 
-static bool delete_symbol(char * value, char symbol)
+static bool delete_symbol(const char * value, char symbol)
 {
     char match[2];
 
@@ -283,7 +284,7 @@ static bool delete_symbol(char * value, char symbol)
     return replace(value, match, "");
 }
 
-static bool borrow(char * value, size_t valueSize, char symbol)
+static bool borrow(const char * value, size_t valueSize, char symbol)
 {
     bool success = false;
 
@@ -362,7 +363,7 @@ static bool borrow(char * value, size_t valueSize, char symbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translateFirstMatch(char * value,
+static bool translateFirstMatch(const char * value,
                                 size_t valueSize,
                                 const Translation * table,
                                 size_t tableSize)
@@ -416,7 +417,7 @@ static bool isReplacementTooBig(const char * value,
     return success;
 }
 
-static bool replace(char * value,
+static bool replace(const char * value,
                     const char * substring,
                     const char * replacement)
 {
@@ -425,19 +426,19 @@ static bool replace(char * value,
 
     if (substringLocation != 0)
     {
-        size_t substringOffset = substringLocation - value;
+        size_t substringOffset = (size_t)(substringLocation - value);
         size_t substringLength = strlen(substring);
         size_t replacementLength = strlen(replacement);
         size_t valueLength = strlen(value);
 
         if (substringLength != replacementLength)
         {
-            memmove(substringLocation + replacementLength,
-                    substringLocation + substringLength,
-                    (valueLength - substringLength - substringOffset) + 1);
+            (void)memmove(substringLocation + replacementLength,
+                          substringLocation + substringLength,
+                         ((valueLength - substringLength) - substringOffset) + 1);
         }
 
-        memcpy(substringLocation, replacement, replacementLength);
+        (void)memcpy(substringLocation, replacement, replacementLength);
 
         success = true;
     }
