@@ -219,12 +219,11 @@ static int romanIndex(char c)
 {
     static const char order[] = {'I','V','X','L','C','D','M'};
 
-    int index;
+    int index = 0;
 
-    for (index = 0;
-        (index < COUNTOF(order)) && (c != order[index]);
-        ++index)
+    while (index < COUNTOF(order) && (c != order[index]))
     {
+        ++index;
     }
 
     return index;
