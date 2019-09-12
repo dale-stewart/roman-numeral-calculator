@@ -1,15 +1,17 @@
+#include "roman.h"
 #include <check.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "roman.h"
 
 static char result[ROMAN_SIZE];
 
+//lint -e717
+
 #define ASSERT_ROMAN_ADD_EQ(a, b, expected) \
-        ck_assert_str_eq(romanAdd(a, b, result, sizeof(result)), expected);
+        ck_assert_str_eq(romanAdd(a, b, result, sizeof(result)), expected)
 
 #define ASSERT_ROMAN_SUBTRACT_EQ(a, b, expected) \
-        ck_assert_str_eq(romanSubtract(a, b, result, sizeof(result)), expected);
+        ck_assert_str_eq(romanSubtract(a, b, result, sizeof(result)), expected)
 
 START_TEST(one_plus_one_is_two)
     ASSERT_ROMAN_ADD_EQ("I", "I", "II");
@@ -189,7 +191,7 @@ END_TEST
 
 ///////////////////////////////////////////////////////////
 
-Suite * roman_suite(void)
+Suite * romanSuite(void)
 {
     Suite * s;
     TCase * tc;
@@ -255,22 +257,25 @@ Suite * roman_suite(void)
 
 int main(void)
 {
-    int number_failed;
-    Suite *s;
-    SRunner *sr;
-
-    s = roman_suite();
-    sr = srunner_create(s);
+    Suite *s = romanSuite();
+    SRunner * sr = srunner_create(s);
 
     srunner_run_all(sr, CK_NORMAL);
-    number_failed = srunner_ntests_failed(sr);
+    int numberFailed = srunner_ntests_failed(sr);
     srunner_free(sr);
-    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    int returnValue = EXIT_FAILURE;
+    if (0 == numberFailed)
+        returnValue = EXIT_SUCCESS;
+
+    return returnValue;
 }
 
 char const *p;
-void clang_static_analyzer_test()
+void clang_static_analyzer_test(void)
 {
     char const str[] = "string";
-    p = str; // warn
+
+    // This next line should fail static analysis
+    p = str;
 }
