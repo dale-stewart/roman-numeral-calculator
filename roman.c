@@ -170,7 +170,7 @@ static void clearString(char * destination)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool isReplacementTooBig(char * value,
+static bool isReplacementTooBig(const char * value,
                                 size_t valueSize,
                                 const char * from,
                                 const char * to);
@@ -379,12 +379,10 @@ static bool translateFirstMatch(char * value,
         const char * from = table[index].from;
         const char * to = table[index].to;
 
-        if (!isReplacementTooBig(value, valueSize, from, to))
+        if (!isReplacementTooBig(value, valueSize, from, to) &&
+            replace(value, from, to))
         {
-            if (replace(value, from, to))
-            {
-                success = true;
-            }
+            success = true;
         }
     }
 
@@ -393,7 +391,7 @@ static bool translateFirstMatch(char * value,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool isReplacementTooBig(char * value,
+static bool isReplacementTooBig(const char * value,
                                 size_t valueSize,
                                 const char * from,
                                 const char * to)
@@ -405,10 +403,12 @@ static bool isReplacementTooBig(char * value,
         size_t valueLength = strlen(value);
         size_t fromLength = strlen(from);
         size_t toLength = strlen(to);
+        size_t sizeIncrease = 0;
 
-        size_t sizeIncrease = (toLength > fromLength) ?
-                              (toLength - fromLength) :
-                              0;
+        if (toLength > fromLength)
+        {
+            sizeIncrease = toLength - fromLength;
+        }
 
         if ((sizeIncrease > 0) && ((valueLength + sizeIncrease) >= valueSize))
         {
@@ -425,7 +425,8 @@ static bool replace(char * value,
 {
     bool success = false;
     char * substringLocation = strstr(value, substring);
-    if (substringLocation)
+
+    if (substringLocation != 0)
     {
         size_t substringOffset = substringLocation - value;
         size_t substringLength = strlen(substring);
