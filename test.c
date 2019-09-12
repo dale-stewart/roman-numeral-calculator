@@ -191,7 +191,7 @@ END_TEST
 
 ///////////////////////////////////////////////////////////
 
-Suite * romanSuite(void)
+static Suite * romanSuite(void)
 {
     Suite * s;
     TCase * tc;
@@ -266,16 +266,17 @@ int main(void)
 
     int returnValue = EXIT_FAILURE;
     if (0 == numberFailed)
+    {
         returnValue = EXIT_SUCCESS;
+    }
 
     return returnValue;
 }
 
-char const *p;
-void clang_static_analyzer_test(void)
-{
-    char const str[] = "string";
-
-    // This next line should fail static analysis
-    p = str;
-}
+// char const *p;
+// void clang_static_analyzer_test(void)
+// {
+//     char const str[] = "string";
+//     // This next line should fail static analysis
+//     p = str;
+// }

@@ -7,15 +7,15 @@ int main(void)
 {
     char result[ROMAN_SIZE];
 
-    strncpy(result, "I", sizeof(result) - 1);
+    (void)strncpy(result, "I", sizeof(result) - 1);
     result[sizeof(result) - 1] = '\0';
 
     int16_t count = 3999;
 
     while (count != 0)
     {
-        printf("%s\n", result);
-        romanAdd(result, "I", result, sizeof(result));
+        (void)printf("%s\n", result);
+        (void)romanAdd(result, "I", result, sizeof(result));
         --count;
     }
 
