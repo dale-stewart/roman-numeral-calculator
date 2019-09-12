@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -210,8 +211,8 @@ static bool translateAll(const char * value,
 
 static int compareRoman(const void * a, const void * b)
 {
-    return (int)romanIndex(*(const char *)b) -
-           (int)romanIndex(*(const char *)a);
+    return (int32_t)romanIndex(*(const char *)b) -
+           (int32_t)romanIndex(*(const char *)a);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -433,9 +434,13 @@ static bool replace(const char * value,
 
         if (substringLength != replacementLength)
         {
+            size_t sizeToMove = valueLength;
+            sizeToMove -= substringLength;
+            sizeToMove -= substringOffset;
+            ++sizeToMove;
             (void)memmove(substringLocation + replacementLength,
                           substringLocation + substringLength,
-                         ((valueLength - substringLength) - substringOffset) + 1);
+                          sizeToMove);
         }
 
         (void)memcpy(substringLocation, replacement, replacementLength);
