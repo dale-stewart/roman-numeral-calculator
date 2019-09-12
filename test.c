@@ -259,7 +259,7 @@ static void clang_static_analyzer_test(void);
 
 int main(void)
 {
-    (void)clang_static_analyzer_test;
+    (void)&clang_static_analyzer_test;
 
     Suite *s = romanSuite();
     SRunner * sr = srunner_create(s);
