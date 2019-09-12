@@ -255,8 +255,12 @@ static Suite * romanSuite(void)
     return s;
 }
 
+static void clang_static_analyzer_test(void);
+
 int main(void)
 {
+    (void)clang_static_analyzer_test;
+
     Suite *s = romanSuite();
     SRunner * sr = srunner_create(s);
 
@@ -273,10 +277,10 @@ int main(void)
     return returnValue;
 }
 
-// char const *p;
-// void clang_static_analyzer_test(void)
-// {
-//     char const str[] = "string";
-//     // This next line should fail static analysis
-//     p = str;
-// }
+static char const * p = 0;
+static void clang_static_analyzer_test(void)
+{
+    char const str[] = "string";
+    // This next line should fail static analysis
+    p = str;
+}
