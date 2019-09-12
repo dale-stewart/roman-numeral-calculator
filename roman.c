@@ -221,7 +221,7 @@ static int romanIndex(char c)
 
     int index = 0;
 
-    while (index < COUNTOF(order) && (c != order[index]))
+    while ((index < COUNTOF(order)) && (c != order[index]))
     {
         ++index;
     }
