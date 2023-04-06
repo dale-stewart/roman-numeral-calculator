@@ -1,0 +1,27 @@
+name: SonarCloud
+
+on: push
+
+jobs:
+  sonarcloud:
+      runs-on: ubuntu-latest
+      env:
+        BUILD_WRAPPER_OUT_DIR: bw-output
+      steps:
+      - uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: Install packages
+        run: sudo apt-get install check clang clang-tools lcov
+      - name:  Install sonar-scanner and build-wrapper
+        uses: sonarsource/sonarcloud-github-c-cpp@v1
+      - name: Run build-wrapper
+        run: |
+        build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make coverage
+        - sonar-scanner
+      - name: Run sonar-scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" 
