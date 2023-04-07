@@ -46,3 +46,13 @@ make coverage_report
 
 This will measure test coverage of the tests, and then open a web browser with a report of the
 measured test coverage.
+
+
+And, you can do further checks with clang-tidy:
+
+```
+sudo apt-get install clang-tidy
+make tidy
+```
+
+This will do buffer overflow security checks, for example.
