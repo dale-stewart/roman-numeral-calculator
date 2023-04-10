@@ -11,16 +11,16 @@ int main(void)
 
     (void)strncpy(result, "I", sizeof result);
 
-    if (result[sizeof result - 1] == 0)
-    {
-        int16_t count = 3999;
+    if (result[sizeof result - 1] != 0)
+        return -1;
 
-        while (count != 0)
-        {
-            (void)printf("%s\n", result);
-            (void)romanAdd(result, "I", result, sizeof(result));
-            --count;
-        }
+    int16_t count = 3999;
+
+    while (count != 0)
+    {
+        (void)printf("%s\n", result);
+        (void)romanAdd(result, "I", result, sizeof(result));
+        --count;
     }
 
     return 0;
