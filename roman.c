@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <safe_str_lib.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -124,7 +125,7 @@ static bool normalize(char * value, size_t valueSize)
         { "DD",     "M"  },
     };
 
-    qsort(value, strlen(value), sizeof(char), compareRoman);
+    qsort(value, strnlen_s(value, valueSize), sizeof(char), compareRoman);
 
     return translateAll(value, valueSize, table, COUNTOF(table));
 }
@@ -132,11 +133,11 @@ static bool normalize(char * value, size_t valueSize)
 ///////////////////////////////////////////////////////////////////////////////
 
 static bool copyString(char * destination,
-                        size_t destinationSize,
-                        const char * source)
+                       size_t destinationSize,
+                       const char * source)
 {
     bool success = false;
-    size_t sourceSize = strlen(source) + 1;
+    size_t sourceSize = strnlen_s(source, ROMAN_SIZE) + 1;
 
     if (sourceSize <= destinationSize)
     {
@@ -152,8 +153,8 @@ static bool appendString(char * destination,
                           const char * source)
 {
     bool success = false;
-    size_t sourceSize = strlen(source) + 1;
-    size_t destinationLength = strlen(destination);
+    size_t sourceSize = strnlen_s(source, ROMAN_SIZE) + 1;
+    size_t destinationLength = strnlen_s(destination, destinationSize);
 
     if ((sourceSize + destinationLength) <= destinationSize)
     {
@@ -252,7 +253,7 @@ static bool subtractAllSymbols(const char * value,
                                const char * rhs)
 {
     bool success = true;
-    size_t rhsLength = strlen(rhs);
+    size_t rhsLength = strnlen_s(rhs, ROMAN_SIZE);
 
     for (size_t i = 0; i < rhsLength; ++i)
     {
@@ -396,9 +397,9 @@ static bool isReplacementTooBig(const char * value,
 
     if (strstr(value, from) != 0)
     {
-        size_t valueLength = strlen(value);
-        size_t fromLength = strlen(from);
-        size_t toLength = strlen(to);
+        size_t valueLength = strnlen_s(value, valueSize);
+        size_t fromLength = strnlen_s(from, ROMAN_SIZE);
+        size_t toLength = strnlen_s(to, ROMAN_SIZE);
         size_t sizeIncrease = 0;
 
         if (toLength > fromLength)
@@ -425,9 +426,9 @@ static bool replace(const char * value,
     if (substringLocation != 0)
     {
         size_t substringOffset = (size_t)(substringLocation - value);
-        size_t substringLength = strlen(substring);
-        size_t replacementLength = strlen(replacement);
-        size_t valueLength = strlen(value);
+        size_t substringLength = strnlen_s(substring, ROMAN_SIZE);
+        size_t replacementLength = strnlen_s(replacement, ROMAN_SIZE);
+        size_t valueLength = strnlen_s(value, ROMAN_SIZE);
 
         if (substringLength != replacementLength)
         {

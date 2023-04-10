@@ -1,5 +1,5 @@
-TEST_linkflags = `pkg-config --libs check`
-TEST_cflags = `pkg-config --cflags check` -g -std=c17 -Wall -Werror --coverage
+TEST_linkflags = `pkg-config --libs check libsafec`
+TEST_cflags = `pkg-config --cflags check libsafec` -g -std=c17 -Wall -Werror --coverage
 CC = gcc
 
 .PHONY : all

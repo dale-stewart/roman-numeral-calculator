@@ -8,6 +8,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install packages
-      run: sudo apt-get install check clang clang-tools lcov
+      run: sudo apt-get install check clang clang-tools lcov libsafec-dev
     - name: make
       run: make
