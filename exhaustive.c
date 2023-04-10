@@ -5,14 +5,7 @@
 
 int main(void)
 {
-    char result[ROMAN_SIZE];
-
-    result[sizeof result  - 1] = 0;
-
-    (void)strncpy(result, "I", sizeof result);
-
-    if (result[sizeof result - 1] != 0)
-        return -1;
+    char result[ROMAN_SIZE] = "I";
 
     int16_t count = 3999;
 
