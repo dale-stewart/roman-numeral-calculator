@@ -11,7 +11,7 @@ static bool denormalize(const char * value, size_t valueSize);
 static bool normalize(char * value, size_t valueSize);
 static bool subtractSymbol(const char * value, size_t valueSize, char symbol);
 
-static bool subtractAllSymbols(const char * value,
+static bool subtractAllSymbols(char * value,
                                size_t valueSize,
                                const char * rhs);
 
@@ -25,6 +25,14 @@ static bool appendString(char * destination,
 
 static void clearString(char * destination);
 
+typedef bool (*OperationFunction)(char * value, size_t valueSize, const char * rhs);
+
+static const char * romanBinaryOperation(OperationFunction operation,
+                                         const char * a,
+                                         const char * b,
+                                         char * result,
+                                         size_t resultSize);
+
 ///////////////////////////////////////////////////////////////////////////////
 
 const char * romanAdd(const char * a,
@@ -32,23 +40,7 @@ const char * romanAdd(const char * a,
                       char * result,
                       size_t resultSize)
 {
-    char rhs[ROMAN_SIZE];
-
-    bool success;
-
-    success = copyString(result, resultSize, a);
-    success = success && copyString(rhs, sizeof(rhs), b);
-    success = success && denormalize(result, resultSize);
-    success = success && denormalize(rhs, sizeof(rhs));
-    success = success && appendString(result, resultSize, rhs);
-    success = success && normalize(result, resultSize);
-
-    if (!success)
-    {
-        clearString(result);
-    }
-
-    return result;
+    return romanBinaryOperation(appendString, a, b, result, resultSize);
 }
 
 const char * romanSubtract(const char * a,
@@ -56,23 +48,7 @@ const char * romanSubtract(const char * a,
                            char * result,
                            size_t resultSize)
 {
-    char rhs[ROMAN_SIZE];
-
-    bool success;
-
-    success = copyString(result, resultSize, a);
-    success = success && copyString(rhs, sizeof(rhs), b);
-    success = success && denormalize(result, resultSize);
-    success = success && denormalize(rhs, sizeof(rhs));
-    success = success && subtractAllSymbols(result, resultSize, rhs);
-    success = success && normalize(result, resultSize);
-
-    if (!success)
-    {
-        clearString(result);
-    }
-
-    return result;
+    return romanBinaryOperation(subtractAllSymbols, a, b, result, resultSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -170,6 +146,31 @@ static void clearString(char * destination)
     destination[0] = '\0';
 }
 
+const char * romanBinaryOperation(OperationFunction operation,
+                                  const char * a,
+                                  const char * b,
+                                  char * result,
+                                  size_t resultSize)
+{
+    char rhs[ROMAN_SIZE];
+
+    bool success;
+
+    success = copyString(result, resultSize, a);
+    success = success && copyString(rhs, sizeof(rhs), b);
+    success = success && denormalize(result, resultSize);
+    success = success && denormalize(rhs, sizeof(rhs));
+    success = success && (*operation)(result, resultSize, rhs);
+    success = success && normalize(result, resultSize);
+
+    if (!success)
+    {
+        clearString(result);
+    }
+
+    return result;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 static bool isReplacementTooBig(const char * value,
@@ -248,7 +249,7 @@ static bool subtractSymbol(const char * value, size_t valueSize, char symbol)
     return success;
 }
 
-static bool subtractAllSymbols(const char * value,
+static bool subtractAllSymbols(char * value,
                                size_t valueSize,
                                const char * rhs)
 {
