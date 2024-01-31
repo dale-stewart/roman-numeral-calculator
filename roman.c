@@ -7,9 +7,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool denormalize(const char * value, size_t valueSize);
+static bool denormalize(char * value, size_t valueSize);
 static bool normalize(char * value, size_t valueSize);
-static bool subtractSymbol(const char * value, size_t valueSize, char symbol);
+static bool subtractSymbol(char * value, size_t valueSize, char symbol);
 
 static bool subtractAllSymbols(char * value,
                                size_t valueSize,
@@ -59,7 +59,7 @@ typedef struct Translation
     const char * to;
 } Translation;
 
-static bool translateAll(const char * value,
+static bool translateAll(char * value,
                          size_t valueSize,
                          const Translation * table,
                          size_t tableSize);
@@ -68,7 +68,7 @@ static int compareRoman(const void * a, const void * b);
 
 #define COUNTOF(array) (sizeof(array) / sizeof(array[0]))
 
-static bool denormalize(const char * value, size_t valueSize)
+static bool denormalize(char * value, size_t valueSize)
 {
     static const Translation table[] =
     {
@@ -178,13 +178,13 @@ static bool isReplacementTooBig(const char * value,
                                 const char * from,
                                 const char * to);
 
-static bool replace(const char * value,
+static bool replace(char * value,
                     const char * substring,
                     const char * replacement);
 
 static size_t romanIndex(char c);
 
-static bool translateAll(const char * value,
+static bool translateAll(char * value,
                          size_t valueSize,
                          const Translation * table,
                          size_t tableSize)
@@ -234,10 +234,10 @@ static size_t romanIndex(char c)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool delete_symbol(const char * value, char symbol);
-static bool borrow(const char * value, size_t valueSize, char symbol);
+static bool delete_symbol(char * value, char symbol);
+static bool borrow(char * value, size_t valueSize, char symbol);
 
-static bool subtractSymbol(const char * value, size_t valueSize, char symbol)
+static bool subtractSymbol(char * value, size_t valueSize, char symbol)
 {
     bool success = delete_symbol(value, symbol);
 
@@ -270,12 +270,12 @@ static bool subtractAllSymbols(char * value,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translateFirstMatch(const char * value,
+static bool translateFirstMatch(char * value,
                                 size_t valueSize,
                                 const Translation * table,
                                 size_t tableSize);
 
-static bool delete_symbol(const char * value, char symbol)
+static bool delete_symbol(char * value, char symbol)
 {
     char match[2];
 
@@ -285,7 +285,7 @@ static bool delete_symbol(const char * value, char symbol)
     return replace(value, match, "");
 }
 
-static bool borrow(const char * value, size_t valueSize, char symbol)
+static bool borrow(char * value, size_t valueSize, char symbol)
 {
     bool success = false;
 
@@ -364,7 +364,7 @@ static bool borrow(const char * value, size_t valueSize, char symbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool translateFirstMatch(const char * value,
+static bool translateFirstMatch(char * value,
                                 size_t valueSize,
                                 const Translation * table,
                                 size_t tableSize)
@@ -417,7 +417,7 @@ static bool isReplacementTooBig(const char * value,
     return success;
 }
 
-static bool replace(const char * value,
+static bool replace(char * value,
                     const char * substring,
                     const char * replacement)
 {
