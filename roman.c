@@ -146,7 +146,7 @@ static void clearString(char * destination)
     destination[0] = '\0';
 }
 
-const char * romanBinaryOperation(OperationFunction operation,
+static const char * romanBinaryOperation(OperationFunction operation,
                                   const char * a,
                                   const char * b,
                                   char * result,
