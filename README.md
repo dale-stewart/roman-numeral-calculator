@@ -4,7 +4,7 @@ This repository implements the
 [Roman Numeral Calculator](http://codingdojo.org/cgi-bin/index.pl?KataRomanCalculator) kata,
 with the added feature of also implementing subtraction.
 
-It is intended to be built on a Linux platform, such as Ubuntu 14.04.
+It is intended to be built on a Linux platform, such as Ubuntu 24.04.
 
 From a base of desktop Ubuntu, the following command will install the necessary dependencies:
 
