@@ -360,5 +360,8 @@ static void clang_static_analyzer_test(void)
 {
     char const str[] = "string";
     // This next line should fail static analysis
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdangling-pointer"
     p = str;
+#pragma GCC diagnostic pop
 }
