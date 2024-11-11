@@ -355,13 +355,18 @@ int main(void)
     return returnValue;
 }
 
+#define GCC_VERSION (__GNUC__ * 10000 \
+                     + __GNUC_MINOR__ * 100 \
+                     + __GNUC_PATCHLEVEL__)
+
 static char const * p = 0;
 static void clang_static_analyzer_test(void)
 {
     char const str[] = "string";
-    // This next line should fail static analysis
 #pragma GCC diagnostic push
+#if defined(__GNUC__) && __GNUC__ < 14
 #pragma GCC diagnostic ignored "-Wdangling-pointer"
-    p = str;
+#endif
+    p = str; // This line should fail static analysis
 #pragma GCC diagnostic pop
 }
